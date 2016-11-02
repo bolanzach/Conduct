@@ -2,8 +2,9 @@ var Engine = (function () {
 	var b = [];
 	var s = [];
 	var gameObjectsMap = {};
-	var behaviorsMap = {};
-
+	var activeBehaviorsMap = {};        // Holds all active behaviors in update order
+	var tempBehaviorMap = {};           // Holds behavior references while a game object is being built
+	var behaviorsToGameObjectsMap = {}; // Holds each game object and every one of their behaviors
 
 	/**
 	 * Startup the Game
@@ -59,13 +60,13 @@ var Engine = (function () {
 						behaviorInstance.$name = name;
 						return behaviorInstance;
 					}
-				})()
+				})();
 			});
 
 			function update () {
-				for (var type in behaviorsMap) {
-					if (behaviorsMap.hasOwnProperty(type)) {
-						behaviorsMap[type].forEach(function (behavior) {
+				for (var type in activeBehaviorsMap) {
+					if (activeBehaviorsMap.hasOwnProperty(type)) {
+						activeBehaviorsMap[type].forEach(function (behavior) {
 							var updateFunc = behavior.$update;
 							if (behavior.active && updateFunc && typeof updateFunc === 'function') {
 								updateFunc();
@@ -81,8 +82,7 @@ var Engine = (function () {
 			// Start the game loop
 			(function gameLoop () {
 				update();
-				//window.setTimeout(gameLoop, (1/settings.fps)*1000);
-				window.setTimeout(gameLoop, (1)*1000);
+				window.setTimeout(gameLoop, (1/settings.fps)*1000);
 			})();
 
 			startup({
@@ -108,23 +108,45 @@ var Engine = (function () {
 		}
 	};
 
+	/**
+	 *
+	 * @param options
+	 */
 	var gameObject = function (options) {
 		var gameObject = {
 			id: Engine.Services.$idGenerator('e'),
-			behaviors: [],
 			children: [],
 
+			/**
+			 *
+			 * @param behavior
+			 */
 			add: function (behavior) {
 				//// do checks!
-				this.behaviors.push(behavior);
-				behavior.gameObject = this;
+
+				var id = this.id;
+				var behaviorId = behavior.id;
+				behaviorsToGameObjectsMap[id] = behaviorsToGameObjectsMap[id] || {};
+				behaviorsToGameObjectsMap[id][behavior.$name] = behaviorsToGameObjectsMap[id][behavior.$name] || [];
+
+				behavior.gameObject = id;
+				tempBehaviorMap[behaviorId] = behavior;
+				behaviorsToGameObjectsMap[id][behavior.$name].push(behaviorId);
 
 				return {
-					$behavior: behavior,
+					$behavior: behaviorId,
 					$inject: function () {
-						var construct = this.$behavior.$construct;
-						if (construct && typeof construct === 'function') {
-							construct.apply(this, arguments);
+						var behavior = tempBehaviorMap[this.$behavior];
+						var construct = behavior.$construct;
+						if (construct && typeof construct === 'function' && arguments && arguments.length) {
+							var behaviorArgs = [];
+							for (var i = 0; i < arguments.length; i++) {
+								var arg = arguments[i];
+								if (arg.$behavior) {
+									behaviorArgs.push(tempBehaviorMap[arg.$behavior]);
+								}
+							}
+							construct.apply(this, behaviorArgs);
 						}
 					},
 					$autowire: function () {
@@ -133,34 +155,53 @@ var Engine = (function () {
 				}
 			},
 
+			/**
+			 *
+			 * @param childGameObject
+			 */
 			addChild: function (childGameObject) {
-				this.children.push(childGameObject);
-				childGameObject.parent = this;
-				childGameObject.active = true;
+				var behaviorKeys = behaviorsToGameObjectsMap[childGameObject.id];
+				this.children.push(childGameObject.id);
 				gameObjectsMap[childGameObject.id] = childGameObject;
+				childGameObject.parent = this.id;
+				childGameObject.active = true;
 
-				childGameObject.behaviors.forEach(function (behavior) {
-					var name = behavior.$name;
-					var activeBehaviors = behaviorsMap[name] || [];
-					var isAlreadyActive = activeBehaviors.some(function (activeBehavior) {
-						return activeBehavior.id === behavior.id;
-					});
+				for (var behaviors in behaviorKeys) {
+					if (behaviorKeys.hasOwnProperty(behaviors)) {
+						behaviorKeys[behaviors].forEach(function (behaviorId) {
+							var name;
+							var initFunc;
+							var behavior = tempBehaviorMap[behaviorId];
 
-					if (!isAlreadyActive) {
-						var initFunc = behavior.$init;
-						activeBehaviors.push(behavior);
-						behavior.active = true;
-						if (initFunc && typeof initFunc === 'function') {
-							initFunc();
-						}
+							if (behavior) {
+								name = behavior.$name;
+								activeBehaviorsMap[name] = activeBehaviorsMap[name] || [];
+								activeBehaviorsMap[name].push(behavior);
+								behavior.active = true;
+								initFunc = behavior.$init;
+
+								if (initFunc && typeof initFunc === 'function') {
+									initFunc();
+								}
+								delete tempBehaviorMap[behaviorId];
+							}
+						});
 					}
-
-					behaviorsMap[name] = activeBehaviors;
-				});
+				}
 			},
 
+			/**
+			 *
+			 */
 			destroy: function () {
+				var behaviorKeys = behaviorsToGameObjectsMap[this.id];
+				for (var behaviors in behaviorKeys) {
+					if (behaviorKeys.hasOwnProperty(behaviors)) {
+						behaviorKeys[behaviors].forEach(function (behaviorId) {
 
+						});
+					}
+				}
 			}
 		};
 

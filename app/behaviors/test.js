@@ -1,15 +1,16 @@
-Engine.Behaviors.$Register('$test', function (msg) {
+Engine.Behaviors.$Register('$test', function () {
+	var testTwoBehavior;
 
-	this.$construct = function (b1, b2, b3) {
-		console.log('yaya i cons');
+	this.$construct = function (_testTwo) {
+		testTwoBehavior = _testTwo;
 	};
 
 	this.$init = function () {
-		console.log('yaya i init');
-	};
+		console.log(testTwoBehavior);
+};
 
 	this.$update = function () {
-		console.log(msg || 'no message');
+		console.log(testTwoBehavior.sayHi);
 	};
 
 
