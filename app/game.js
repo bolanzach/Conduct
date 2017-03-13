@@ -54,10 +54,10 @@ Engine.$init({}, function (world) {
 	renderer.render(scene, camera);*/
 
 
-	var actor = Engine.GameObject();
-	actor.add();
 
-	var b = Engine.Behavior
+
+	var actor = Engine.GameObject();
+	var a = actor.add(Engine.Behavior.$test('hi'));
 
 
 });
