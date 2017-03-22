@@ -1,8 +1,8 @@
 import {Engine} from "./kore/engine";
 
-let engine = new Engine({});
-
-engine.init(function () {
+Engine.init({}, function () {
   
+  let transform = Engine.Component.Transform({});
+  console.log(transform);
   console.log('started game');
 });

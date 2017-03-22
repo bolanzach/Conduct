@@ -2,19 +2,29 @@ import {ComponentManager} from "./componentManager";
 
 export class Engine {
   
+  public static Component: any = {};
+  public static Service: any = {};
+  
   private static componentManager: ComponentManager = new ComponentManager;
+  private static servicerManager;
   
-  constructor(options) {
-    
-  }
-  
-  public init (cb: Function) {
-    
+  public static init(options, cb: Function) {
     cb();
   }
   
+  /**
+   *
+   * @param component
+   */
   public static registerComponent(component) {
-    this.componentManager.register(component);
+    let registeredComponent = Engine.componentManager.register(component);
+    Engine.Component[registeredComponent.name] = function (config) {
+      return Engine.componentManager.create(registeredComponent.name, config);
+    };
+  }
+  
+  public static registerService(service) {
+    
   }
   
   

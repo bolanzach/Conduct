@@ -4,7 +4,6 @@ require(
     'kore/componentManager',
     'components/component',
     'components/transform',
-
     'game'
   ]
 );
