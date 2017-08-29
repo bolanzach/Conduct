@@ -4,6 +4,10 @@ require(
     'kore/componentManager',
     'components/component',
     'components/transform',
-    'game'
-  ]
+    'components/worldComponent'
+  ],
+  function (idk) {
+    console.log('main.js done');
+    require(['game']);
+  }
 );
