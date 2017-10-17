@@ -1,10 +1,9 @@
 require(
   [
-    'kore/engine',
-    'kore/componentManager',
-    'components/component',
-    'components/transform',
-    'components/worldComponent'
+    'core/engine',
+    'core/services/serviceProvider',
+
+    'core/services/utilsService'
   ],
   function (idk) {
     console.log('main.js done');

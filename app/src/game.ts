@@ -1,6 +1,6 @@
-import {Engine} from "./kore/engine";
+import {Engine} from "./core/engine";
 
-Engine.init({}, function (world) {
+Engine.Init({}, function (world) {
   
   
   console.log('started game');
