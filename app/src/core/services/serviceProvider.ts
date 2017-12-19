@@ -51,11 +51,7 @@ export class ServiceProvider {
   
   private doInject (clazz, args, name) {
     let dependencies = args.map(arg => ServiceProvider.injected[arg]);
-    //let a = new (Function.prototype.bind.apply(constructor, dependencies));
-    //let a = constructor.apply(constructor, dependencies);
-    //let a = new (constructor.apply(constructor, dependencies));
-    //ServiceProvider.injected[name] = new (clazz.apply(clazz, dependencies));
-    ServiceProvider.injected[name] = new (Function.bind.apply(clazz, dependencies));
+    ServiceProvider.injected[name] = new clazz(...dependencies);
     delete ServiceProvider.registered[name];
   }
 

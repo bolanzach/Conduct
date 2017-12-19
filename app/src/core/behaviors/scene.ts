@@ -12,9 +12,4 @@ export class Scene extends Behavior {
   
   }
   
-  public doStuff() {
-  
-  }
-
-  
 }

@@ -9,13 +9,11 @@ export class BehaviorManager {
   private behaviorsToUpdate: any = {};
   private behaviorRecords: any = {};
   
-  constructor () {
-  
-  }
+  constructor () {}
   
   public initScene (): Scene {
-    let stageBehaviorAssembler: BehaviorAssembler = new BehaviorProvider().get('Scene');
-    let record: BehaviorManager.BehaviorAssemblerRecord = new BehaviorManager.BehaviorAssemblerRecord(stageBehaviorAssembler);
+    let stageBehaviorAssembler: BehaviorAssembler = BehaviorProvider.get('Scene');
+    let record: BehaviorManager.BehaviorAssemblerRecord = new BehaviorManager.BehaviorAssemblerRecord(stageBehaviorAssembler, null);
     let sceneBehavior = this.constructBehaviorFromRecord(record, null);
     return sceneBehavior as Scene;
   }
@@ -26,8 +24,8 @@ export class BehaviorManager {
 
   public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): BehaviorAssembler {
     let newBehaviorName = getConstructorName(attach);
-    let newBehaviorAssembler = new BehaviorProvider().get(newBehaviorName);
-    let newBehaviorRecord = new BehaviorManager.BehaviorAssemblerRecord(newBehaviorAssembler);
+    let newBehaviorAssembler = BehaviorProvider.get(newBehaviorName);
+    let newBehaviorRecord = new BehaviorManager.BehaviorAssemblerRecord(newBehaviorAssembler, to);
     let activeBehaviorRecord = this.behaviorRecords[to];
     
     if (!activeBehaviorRecord) {
@@ -54,6 +52,10 @@ export class BehaviorManager {
     return record.behavior;
   }
   
+  public findBehavior (id: string): Behavior | undefined {
+    return this.behaviorsToUpdate[id];
+  }
+  
   public getChildrenBehaviors (id: string): Array<Behavior> {
     let parentBehavior: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[id];
     
@@ -67,8 +69,32 @@ export class BehaviorManager {
     });
   }
   
+  public getParentBehavior (id: string) {
+    let childRecord = this.behaviorRecords[id];
+    return this.findBehavior((childRecord || {}).parent);
+  }
+  
+  public deactivateBehavior (id: string) {
+    let behaviorRecordToDeactivate = this.behaviorRecords[id];
+    
+    if (!behaviorRecordToDeactivate) {
+      return;
+    }
+  
+    let parent = this.behaviorRecords[behaviorRecordToDeactivate.parent];
+    // let disableParent = O
+    //
+    // delete this.behaviorRecords[id];
+    // delete this.behaviorsToUpdate[id];
+    // delete parent.activeChildren[behaviorRecordToDeactivate.]
+    
+    
+  }
+  
   private tryToActivateRecord (record: BehaviorManager.BehaviorAssemblerRecord) {
+    let behaviorCreated: boolean = false;
     let inactiveChildren = record.inactiveChildren || {};
+    
     Object.keys(inactiveChildren).forEach((behaviorType: string) => {
       let inactiveBehavior = inactiveChildren[behaviorType];
       let dependencies = inactiveBehavior.assembler.getConfig().args;
@@ -78,12 +104,17 @@ export class BehaviorManager {
         return;
       }
       
+      behaviorCreated = true;
       delete inactiveChildren[behaviorType];
       record.activeChildren[behaviorType] = {
         record: inactiveBehavior,
         behavior: this.constructBehaviorFromRecord(inactiveBehavior, record)
       };
     });
+    
+    if (behaviorCreated) {
+      this.tryToActivateRecord(record);
+    }
   }
   
   /**
@@ -99,10 +130,12 @@ export class BehaviorManager {
     
     if (parentRecord) {
       let activeBehaviors = parentRecord.activeChildren || {};
-      dependencies = (config.args || []).map(arg => activeBehaviors[arg] || activeBehaviors[arg].behavior);
+      dependencies = (config.args || []).map(arg => activeBehaviors[arg].behavior);
     }
     
-    behavior = new (Function.bind.apply(config.clazz, dependencies));
+    behavior = new config.clazz(...dependencies);
+    //* or alternatively */behavior = new (Function.prototype.bind.apply(config.clazz, dependencies));
+    
     id = behavior.getId();
     this.behaviorsToUpdate[id] = behavior;
     this.behaviorRecords[id] = behaviorRecord;
@@ -124,12 +157,14 @@ export namespace BehaviorManager {
     assembler: BehaviorAssembler;
     inactiveChildren: any = {};
     activeChildren: any = {};
+    parent: string;
   
     /**
      * @param assembler - Assembler to record
      */
-    constructor (assembler: BehaviorAssembler) {
+    constructor (assembler: BehaviorAssembler, parentId: string) {
       this.assembler = assembler;
+      this.parent = parentId;
     }
   }
 }

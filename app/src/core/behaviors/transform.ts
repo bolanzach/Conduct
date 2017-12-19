@@ -7,6 +7,7 @@ export class Transform extends Behavior {
   x: number;
   y: number;
   rotation: number;
+  scale: number;
   
   constructor () {
     super();

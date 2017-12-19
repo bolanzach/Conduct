@@ -49,4 +49,8 @@ export abstract class Behavior {
     return this.id;
   }
   
+  public getParent (): Behavior {
+    return Engine.getParentBehavior(this.getId());
+  }
+  
 }

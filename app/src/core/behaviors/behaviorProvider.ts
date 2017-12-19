@@ -3,20 +3,23 @@ import {BehaviorAssembler} from "./behaviorAssembler";
 export class BehaviorProvider {
   
   private static registered: any = {};
+  private static injectionArgs: any = {};
+  private static requiredChildren: any = {};
   
-  public inject (behavioreName: string, args: Array<string>, clazz: any) {
-    if (BehaviorProvider.registered[behavioreName]) {
+  public static inject (behaviorName: string, args: Array<string>, clazz: any) {
+    if (BehaviorProvider.registered[behaviorName]) {
       return;
     }
     
-    BehaviorProvider.registered[behavioreName] = {
-      name: behavioreName,
+    BehaviorProvider.registered[behaviorName] = {
+      name: behaviorName,
       clazz: clazz,
-      args: args
+      args: BehaviorProvider.injectionArgs[behaviorName] || [],
+      requiredChildren: BehaviorProvider.requiredChildren[behaviorName] || []
     };
   }
   
-  public get (behaviorName: string): BehaviorAssembler {
+  public static get (behaviorName: string): BehaviorAssembler {
     let registeredBehavior: any = BehaviorProvider.registered[behaviorName];
     
     if (!registeredBehavior) {
@@ -26,6 +29,26 @@ export class BehaviorProvider {
     
     return new BehaviorAssembler(registeredBehavior);
   }
-
   
+  public static addInjectionRequirement (behavior, injectable, index) {
+    let requiredArgs = (BehaviorProvider.registered[behavior] || {}).args;
+  
+    if (!requiredArgs) {
+      requiredArgs = BehaviorProvider.injectionArgs[behavior] || [];
+    }
+  
+    requiredArgs[index] = injectable;
+    BehaviorProvider.injectionArgs[behavior] = requiredArgs;
+  }
+  
+  public static addRequireChildBehavior (parent: string, child: string) {
+    let requiredChildren = (BehaviorProvider.registered[parent] || {}).requiredChildren;
+    
+    if (!requiredChildren) {
+      requiredChildren = BehaviorProvider.requiredChildren[parent] || [];
+    }
+    
+    requiredChildren.push(child);
+    BehaviorProvider.requiredChildren[parent] = requiredChildren;
+  }
 }
