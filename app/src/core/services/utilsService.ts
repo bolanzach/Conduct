@@ -9,7 +9,7 @@ export class UtilsService implements Service {
     if (this.idCount === Number.MAX_VALUE) {
       this.idCount = 0;
     }
-    return (prefix || 'e') + (this.idCount++) + '-' + new Date().getTime();
+    return (prefix || 'e') + '.' + (this.idCount++) + '.' + new Date().getTime();
   }
   
   /**

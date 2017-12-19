@@ -1,5 +1,5 @@
-import {Service} from "./service";
 import {getConstructorName} from "../metaDecorators";
+import {Service} from "./service";
 
 export class ServiceProvider {
   
@@ -37,7 +37,7 @@ export class ServiceProvider {
    * @param service
    * @returns {any}
    */
-  public get <T>(service: new (...args: any[]) => T): T {
+  public static get <T extends Service>(service: new (...args: any[]) => T): T {
     let dependency = ServiceProvider.injected[getConstructorName(service)];
     if (dependency) {
       return dependency
@@ -54,10 +54,9 @@ export class ServiceProvider {
     //let a = new (Function.prototype.bind.apply(constructor, dependencies));
     //let a = constructor.apply(constructor, dependencies);
     //let a = new (constructor.apply(constructor, dependencies));
-  
-    // not quite right. calling the constructor twice :/
-    ServiceProvider.injected[name] = new (clazz.apply(clazz, dependencies));
-    //delete ServiceProvider.registered[name];
+    //ServiceProvider.injected[name] = new (clazz.apply(clazz, dependencies));
+    ServiceProvider.injected[name] = new (Function.bind.apply(clazz, dependencies));
+    delete ServiceProvider.registered[name];
   }
 
 }

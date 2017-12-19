@@ -1,4 +1,5 @@
 import {ServiceProvider} from "./services/serviceProvider";
+import {BehaviorProvider} from "./behaviors/behaviorProvider";
 
 let STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 let ARGUMENT_NAMES = /([^\s,]+)/g;
@@ -8,6 +9,14 @@ export function RegisterService (alias?: string) {
     let serviceName: string = getConstructorName(constructor);
     let args = getConstructorArgs(constructor);
     new ServiceProvider().inject(serviceName, args, constructor);
+  }
+}
+
+export function RegisterBehavior (config?: any) {
+  return function (constructor: Function) {
+    let behaviorName: string = getConstructorName(constructor);
+    let args = getConstructorArgs(constructor);
+    new BehaviorProvider().inject(behaviorName, args, constructor);
   }
 }
 
