@@ -19,22 +19,26 @@ export abstract class Behavior {
     this.active = true;
   }
   
-  public abstract Update ();
+  public abstract update ();
   
-  public Deactivate () {
+  public deactivate () {
     this.active = false;
   }
   
-  public Destroy () {
+  public destroy () {
   
   }
   
-  public AddBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): BehaviorAssembler {
+  public addBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): BehaviorAssembler {
     return Engine.attachBehaviorToBehavior(behavior, this.getId());
   }
   
-  public GetBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): new (...args: any[]) => T {
-    return null;
+  public getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): T {
+    return Engine.getBehavior(behavior, this.getId());
+  }
+  
+  public getChildren (): Array<Behavior> {
+    return Engine.getChildrenBehaviors(this.getId());
   }
   
   public isActive (): boolean {

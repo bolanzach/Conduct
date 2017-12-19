@@ -8,8 +8,8 @@ export class Scene extends Behavior {
     super();
   }
   
-  public Update() {
-    throw new Error('Method not implemented.');
+  public update() {
+  
   }
   
   public doStuff() {

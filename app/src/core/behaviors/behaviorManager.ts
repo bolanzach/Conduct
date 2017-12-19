@@ -21,7 +21,7 @@ export class BehaviorManager {
   }
   
   public update () {
-  
+    Object.keys(this.behaviorsToUpdate || {}).forEach(behaviorKey => this.behaviorsToUpdate[behaviorKey].update());
   }
 
   public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): BehaviorAssembler {
@@ -41,6 +41,30 @@ export class BehaviorManager {
     activeBehaviorRecord.inactiveChildren[newBehaviorName] = (newBehaviorRecord);
     this.tryToActivateRecord(activeBehaviorRecord);
     return newBehaviorAssembler;
+  }
+  
+  public getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T, from: string): T {
+    let parentBehavior: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[from];
+    
+    if (!parentBehavior) {
+      return null;
+    }
+    
+    let record = parentBehavior.activeChildren[getConstructorName(behavior)] || {};
+    return record.behavior;
+  }
+  
+  public getChildrenBehaviors (id: string): Array<Behavior> {
+    let parentBehavior: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[id];
+    
+    if (!parentBehavior) {
+      return [];
+    }
+    
+    let activeChildren = parentBehavior.activeChildren || {};
+    return Object.keys(activeChildren).map(childKey => {
+      return activeChildren[childKey].behavior;
+    });
   }
   
   private tryToActivateRecord (record: BehaviorManager.BehaviorAssemblerRecord) {

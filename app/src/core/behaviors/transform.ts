@@ -12,7 +12,7 @@ export class Transform extends Behavior {
     super();
   }
   
-  public Update() {
+  public update() {
     console.log(this.getId());
   }
   
