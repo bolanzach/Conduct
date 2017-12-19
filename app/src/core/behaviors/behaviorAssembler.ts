@@ -1,6 +1,6 @@
 
 export class BehaviorAssembler {
-  config: any;
+  private config: any;
   
   constructor (registeredBehavior: any) {
     this.config = registeredBehavior;
@@ -13,5 +13,9 @@ export class BehaviorAssembler {
   public assemble (configuration: any): BehaviorAssembler {
     this.config.config = configuration;
     return this;
+  }
+  
+  public getConfig (): any {
+    return this.config;
   }
 }

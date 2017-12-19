@@ -1,8 +1,8 @@
 import {BehaviorAssembler} from './behaviorAssembler';
 import {RegisterBehavior} from '../metaDecorators';
-import {BehaviorProvider} from "./behaviorProvider";
 import {UtilsService} from "../services/utilsService";
 import {ServiceProvider} from "../services/serviceProvider";
+import {Engine} from "../engine";
 
 @RegisterBehavior()
 export abstract class Behavior {
@@ -30,7 +30,7 @@ export abstract class Behavior {
   }
   
   public AddBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): BehaviorAssembler {
-    return null;
+    return Engine.attachBehaviorToBehavior(behavior, this.getId());
   }
   
   public GetBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): new (...args: any[]) => T {

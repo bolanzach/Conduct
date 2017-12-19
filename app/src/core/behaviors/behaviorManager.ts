@@ -2,7 +2,7 @@ import {Behavior} from "./behavior";
 import {BehaviorAssembler} from "./behaviorAssembler";
 import {BehaviorProvider} from "./behaviorProvider";
 import {getConstructorName} from "../metaDecorators";
-import {SceneBehavior} from "./sceneBehavior";
+import {Scene} from "./scene";
 
 export class BehaviorManager {
 
@@ -13,14 +13,18 @@ export class BehaviorManager {
   
   }
   
-  public initScene (): SceneBehavior {
-    let stageBehaviorAssembler: BehaviorAssembler = new BehaviorProvider().get('SceneBehavior');
+  public initScene (): Scene {
+    let stageBehaviorAssembler: BehaviorAssembler = new BehaviorProvider().get('Scene');
     let record: BehaviorManager.BehaviorAssemblerRecord = new BehaviorManager.BehaviorAssemblerRecord(stageBehaviorAssembler);
     let sceneBehavior = this.constructBehaviorFromRecord(record, null);
-    return sceneBehavior as SceneBehavior;
+    return sceneBehavior as Scene;
+  }
+  
+  public update () {
+  
   }
 
-  public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string) {
+  public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): BehaviorAssembler {
     let newBehaviorName = getConstructorName(attach);
     let newBehaviorAssembler = new BehaviorProvider().get(newBehaviorName);
     let newBehaviorRecord = new BehaviorManager.BehaviorAssemblerRecord(newBehaviorAssembler);
@@ -36,26 +40,25 @@ export class BehaviorManager {
     
     activeBehaviorRecord.inactiveChildren[newBehaviorName] = (newBehaviorRecord);
     this.tryToActivateRecord(activeBehaviorRecord);
-  }
-  
-  public update () {
-  
+    return newBehaviorAssembler;
   }
   
   private tryToActivateRecord (record: BehaviorManager.BehaviorAssemblerRecord) {
     let inactiveChildren = record.inactiveChildren || {};
     Object.keys(inactiveChildren).forEach((behaviorType: string) => {
       let inactiveBehavior = inactiveChildren[behaviorType];
-      let dependencies = inactiveBehavior.assembler.config.args;
+      let dependencies = inactiveBehavior.assembler.getConfig().args;
       let allDependenciesSatisfied = (dependencies || []).every(arg => !!record.activeChildren[arg]);
       
-      if (allDependenciesSatisfied || !dependencies.length) {
-        delete inactiveChildren[behaviorType];
-        record.activeChildren[behaviorType] = {
-          record: inactiveBehavior,
-          behavior: this.constructBehaviorFromRecord(inactiveBehavior, record)
-        };
+      if (!allDependenciesSatisfied) {
+        return;
       }
+      
+      delete inactiveChildren[behaviorType];
+      record.activeChildren[behaviorType] = {
+        record: inactiveBehavior,
+        behavior: this.constructBehaviorFromRecord(inactiveBehavior, record)
+      };
     });
   }
   
@@ -65,9 +68,18 @@ export class BehaviorManager {
    * @returns {Behavior}
    */
   private constructBehaviorFromRecord (behaviorRecord: BehaviorManager.BehaviorAssemblerRecord, parentRecord: BehaviorManager.BehaviorAssemblerRecord): Behavior {
-    let config = behaviorRecord.assembler.config;
-    let behavior: Behavior = new (Function.bind.apply(config.clazz, config.dependencies));
-    let id = behavior.getId();
+    let behavior: Behavior;
+    let id: string;
+    let dependencies = [];
+    let config = behaviorRecord.assembler.getConfig();
+    
+    if (parentRecord) {
+      let activeBehaviors = parentRecord.activeChildren || {};
+      dependencies = (config.args || []).map(arg => activeBehaviors[arg] || activeBehaviors[arg].behavior);
+    }
+    
+    behavior = new (Function.bind.apply(config.clazz, dependencies));
+    id = behavior.getId();
     this.behaviorsToUpdate[id] = behavior;
     this.behaviorRecords[id] = behaviorRecord;
     return behavior;

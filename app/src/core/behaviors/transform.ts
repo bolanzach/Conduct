@@ -2,15 +2,18 @@ import {RegisterBehavior} from "../metaDecorators";
 import {Behavior} from "./behavior";
 
 @RegisterBehavior()
-export class TransformBehavior extends Behavior {
+export class Transform extends Behavior {
+  
+  x: number;
+  y: number;
+  rotation: number;
   
   constructor () {
     super();
-    console.log(this);
   }
   
   public Update() {
-    console.log(this);
+    console.log(this.getId());
   }
   
   

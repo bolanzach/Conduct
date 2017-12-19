@@ -1,9 +1,7 @@
-var settings = {
-	scene: 'scene'
-};
 
 
-Engine.$init({}, function (world) {
+
+Engine.Init({}, function (scene) {
 
 	/*var WIDTH = 400;
 	var HEIGHT = 300;
@@ -54,10 +52,6 @@ Engine.$init({}, function (world) {
 	renderer.render(scene, camera);*/
 
 
-
-
-	var actor = Engine.GameObject();
-	var a = actor.add(Engine.Behavior.$test('hi'));
 
 
 });

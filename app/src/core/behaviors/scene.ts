@@ -2,7 +2,7 @@ import {Behavior} from "./behavior";
 import {RegisterBehavior} from "../metaDecorators";
 
 @RegisterBehavior()
-export class SceneBehavior extends Behavior {
+export class Scene extends Behavior {
   
   constructor () {
     super();
