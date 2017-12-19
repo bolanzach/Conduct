@@ -53,9 +53,9 @@ define(["require", "exports", "./metaDecorators"], function (require, exports, m
             Provider.injected[name] = new (Function.bind.apply(clazz, dependencies));
             delete Provider.registered[name];
         };
+        Provider.registered = {}; // Registered but not all dependencies resolved
+        Provider.injected = {}; // Registered and all dependencies resolved
         return Provider;
     }());
-    Provider.registered = {}; // Registered but not all dependencies resolved
-    Provider.injected = {}; // Registered and all dependencies resolved
     exports.Provider = Provider;
 });

@@ -2,16 +2,12 @@ import {Behavior} from "./behavior";
 import {BehaviorAssembler} from "./behaviorAssembler";
 import {BehaviorProvider} from "./behaviorProvider";
 import {getConstructorName} from "../metaDecorators";
-import {UtilsService} from "../services/utilsService";
-import {ServiceProvider} from "../services/serviceProvider";
 import {SceneBehavior} from "./sceneBehavior";
 
 export class BehaviorManager {
 
-  private utilsService: UtilsService = ServiceProvider.get(UtilsService);
   private behaviorsToUpdate: any = {};
-  private records: any = {};
-  
+  private behaviorRecords: any = {};
   
   constructor () {
   
@@ -19,16 +15,16 @@ export class BehaviorManager {
   
   public initScene (): SceneBehavior {
     let stageBehaviorAssembler: BehaviorAssembler = new BehaviorProvider().get('SceneBehavior');
-    let record: BehaviorManager.BehaviorAssemblerRecord = this.recordBehavior(stageBehaviorAssembler);
-    let sceneBehavior = this.constructBehavior(record);
+    let record: BehaviorManager.BehaviorAssemblerRecord = new BehaviorManager.BehaviorAssemblerRecord(stageBehaviorAssembler);
+    let sceneBehavior = this.constructBehaviorFromRecord(record, null);
     return sceneBehavior as SceneBehavior;
   }
 
   public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string) {
     let newBehaviorName = getConstructorName(attach);
     let newBehaviorAssembler = new BehaviorProvider().get(newBehaviorName);
-    let newBehaviorRecord = this.recordBehavior(newBehaviorAssembler);
-    let activeBehaviorRecord = this.records[to];
+    let newBehaviorRecord = new BehaviorManager.BehaviorAssemblerRecord(newBehaviorAssembler);
+    let activeBehaviorRecord = this.behaviorRecords[to];
     
     if (!activeBehaviorRecord) {
       return; // no behavior to attach to
@@ -57,22 +53,10 @@ export class BehaviorManager {
         delete inactiveChildren[behaviorType];
         record.activeChildren[behaviorType] = {
           record: inactiveBehavior,
-          behavior: this.constructBehavior(inactiveBehavior)
+          behavior: this.constructBehaviorFromRecord(inactiveBehavior, record)
         };
       }
     });
-  }
-  
-  /**
-   * Records a BehaviorAssembler and records it as a BehaviorAssemblerRecord.
-   * @param behaviorAssembler
-   * @returns {BehaviorManager.BehaviorAssemblerRecord}
-   */
-  private recordBehavior (behaviorAssembler: BehaviorAssembler): BehaviorManager.BehaviorAssemblerRecord {
-    let id = this.utilsService.generateId(behaviorAssembler.config.name);
-    let record = new BehaviorManager.BehaviorAssemblerRecord(id, behaviorAssembler);
-    this.records[id] = record;
-    return record;
   }
   
   /**
@@ -80,10 +64,12 @@ export class BehaviorManager {
    * @param behaviorRecord
    * @returns {Behavior}
    */
-  private constructBehavior (behaviorRecord: BehaviorManager.BehaviorAssemblerRecord): Behavior {
+  private constructBehaviorFromRecord (behaviorRecord: BehaviorManager.BehaviorAssemblerRecord, parentRecord: BehaviorManager.BehaviorAssemblerRecord): Behavior {
     let config = behaviorRecord.assembler.config;
-    let behavior = new (Function.bind.apply(config.clazz, config.dependencies));
-    this.behaviorsToUpdate[behaviorRecord.id] = behavior;
+    let behavior: Behavior = new (Function.bind.apply(config.clazz, config.dependencies));
+    let id = behavior.getId();
+    this.behaviorsToUpdate[id] = behavior;
+    this.behaviorRecords[id] = behaviorRecord;
     return behavior;
   }
   
@@ -99,17 +85,14 @@ export class BehaviorManager {
  */
 export namespace BehaviorManager {
   export class BehaviorAssemblerRecord {
-    id: string;
     assembler: BehaviorAssembler;
     inactiveChildren: any = {};
     activeChildren: any = {};
   
     /**
-     * @param id - the uid for the Behavior
      * @param assembler - Assembler to record
      */
-    constructor (id: string, assembler: BehaviorAssembler) {
-      this.id = id;
+    constructor (assembler: BehaviorAssembler) {
       this.assembler = assembler;
     }
   }
