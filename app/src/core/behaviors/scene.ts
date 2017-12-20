@@ -9,7 +9,7 @@ export class Scene extends Behavior {
   }
   
   public update() {
-  
+    console.log(this.getId());
   }
   
 }

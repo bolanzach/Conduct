@@ -2,37 +2,32 @@ import {BehaviorManager} from "./behaviors/behaviorManager";
 import {UtilsService} from "./services/utilsService";
 import {ServiceProvider} from "./services/serviceProvider";
 import {Scene} from "./behaviors/scene";
-import {Transform} from "./behaviors/transform";
 import {Behavior} from "./behaviors/behavior";
 import {BehaviorAssembler} from "./behaviors/behaviorAssembler";
-import {TestBehavior} from "./behaviors/testBehavior";
+import {Metronome} from "./metronome";
 
 export class Engine {
+  
   private static initialized: boolean = false;
   private static behaviorManager: BehaviorManager;
+  private static metronome: Metronome;
   
   public static Init (config: any, callback: Function) {
     if (this.initialized) {
       return;
     }
-    
-    
-    this.behaviorManager = new BehaviorManager();
-    let scene: Scene = (this.behaviorManager.initScene());
-    
-    scene.addBehavior(TestBehavior);
-    console.log(scene.getChildren());
   
-    scene.addBehavior(Transform);
-    console.log(scene.getChildren());
-    scene.addBehavior(Transform);
-    console.log(scene.getChildren());
+    Engine.metronome = new Metronome();
+    Engine.behaviorManager = new BehaviorManager();
+    let scene: Scene = (Engine.behaviorManager.initScene());
+
     
-  
     
     this.initialized = true;
     callback(scene);
-    this.gameLoop(1);
+    
+    Engine.metronome.start();
+    Engine.metronome.registerToTicks(Engine.onTick);
   }
   
   
@@ -57,10 +52,12 @@ export class Engine {
     return Engine.behaviorManager.getChildrenBehaviors(id);
   }
   
-  private static gameLoop (fps) {
+  
+  
+  private static onTick (delta) {
     Engine.behaviorManager.update();
-    
   }
+  
   
   
 }
