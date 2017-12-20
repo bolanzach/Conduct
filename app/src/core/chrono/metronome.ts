@@ -4,20 +4,25 @@ export class Metronome {
   private isRunning: boolean = false;
   private listeners: Array<Function> = [];
   private lastFrameTimeMs: number;
+  private delta: number;
+  private timeStep: number;
+  
   private maxFPS: number;
   
   constructor () {
     this.lastFrameTimeMs = 0;
+    this.delta = 0;
     this.maxFPS = 1;
   }
   
-  public start () {
+  public start (fps: number) {
     if (this.isRunning) {
       return;
     }
     
-    requestAnimationFrame(this.mainLoop);
+    this.timeStep = 1000 / fps;
     this.isRunning = true;
+    requestAnimationFrame(this.mainLoop);
   }
   
   public registerToTicks (callback: Function): string {
@@ -30,13 +35,20 @@ export class Metronome {
   }
   
   private mainLoop = (timestamp) => {
-    if (timestamp < this.lastFrameTimeMs + (1000 / this.maxFPS)) {
-      requestAnimationFrame(this.mainLoop);
-      return;
+    this.delta += timestamp - this.lastFrameTimeMs;
+    this.lastFrameTimeMs = timestamp;
+    
+    while (this.delta >= this.timeStep) {
+      this.tick(this.timeStep);
+      this.delta -= this.timeStep;
     }
     
-    this.lastFrameTimeMs = timestamp;
-    this.listeners.forEach((cb) => cb());
+    // this.tick(this.delta);
+    // draw() ?
     requestAnimationFrame(this.mainLoop);
   };
+  
+  private tick (delta: number) {
+    (this.listeners || []).forEach((cb) => cb(delta));
+  }
 }

@@ -1,5 +1,5 @@
-import {ServiceProvider} from "./services/serviceProvider";
-import {BehaviorProvider} from "./behaviors/behaviorProvider";
+import {ServiceProvider} from "./provider/serviceProvider";
+import {BehaviorProvider} from "./provider/behaviorProvider";
 
 export function RegisterService (alias?: string) {
   return function (constructor: Function) {
@@ -21,9 +21,9 @@ export function Inject <T>(injectable: new (...args: any[]) => T) {
   };
 }
 
-export function RequireBehavior () {
+export function Required () {
   return function (constructor: any, requiredBehavior: string) {
-    BehaviorProvider.addRequireChildBehavior(getConstructorName(constructor.constructor), requiredBehavior);
+    BehaviorProvider.addRequiredChildBehavior(getConstructorName(constructor.constructor), requiredBehavior);
   };
 }
 

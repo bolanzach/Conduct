@@ -1,8 +1,8 @@
 import {Behavior} from "./behavior";
-import {BehaviorAssembler} from "./behaviorAssembler";
-import {BehaviorProvider} from "./behaviorProvider";
-import {getConstructorName} from "../metaDecorators";
-import {Scene} from "./scene";
+import {BehaviorAssembler} from "../injection/behaviorAssembler";
+import {BehaviorProvider} from "../injection/provider/behaviorProvider";
+import {getConstructorName} from "../injection/metaDecorators";
+import {Scene} from "../behaviors/scene";
 
 export class BehaviorManager {
 
@@ -36,7 +36,7 @@ export class BehaviorManager {
       return; // ? this behavior type is already attached
     }
     
-    activeBehaviorRecord.inactiveChildren[newBehaviorName] = (newBehaviorRecord);
+    activeBehaviorRecord.inactiveChildren[newBehaviorName] = newBehaviorRecord;
     this.tryToActivateRecord(activeBehaviorRecord);
     return newBehaviorAssembler;
   }
@@ -74,21 +74,53 @@ export class BehaviorManager {
     return this.findBehavior((childRecord || {}).parent);
   }
   
+  /**
+   * Deactivate the Behavior with the given id.
+   * This function is not recursive in that it will deactivate all the child Behaviors - that should
+   * be contained within the Behavior class.
+   * This function will however recursively deactivate the parent Behavior if it requires that this
+   * child be activate.
+   *
+   * @param {string} id
+   */
   public deactivateBehavior (id: string) {
-    let behaviorRecordToDeactivate = this.behaviorRecords[id];
-    
-    if (!behaviorRecordToDeactivate) {
+    let result = this.removeRecord(id, this.deactivateBehavior);
+    //result.parent.inactiveChildren[result.behaviorName] = recordToDeactivate;
+  }
+  
+  /**
+   * Destroy the Behavior with the given id.
+   * This function is not recursive in that it will destroy all the child Behaviors - that should
+   * be contained within the Behavior class.
+   * This function will however recursively destroy the parent Behavior if it requires that this
+   * child exist.
+   *
+   * @param {string} id
+   */
+  public destroyBehavior (id: string) {
+    let result = this.removeRecord(id, this.destroyBehavior);
+    //delete result.parent.inactiveChildren[result.behaviorName];
+  }
+  
+  private removeRecord (id: string, removefn: Function)
+  : { behaviorName: BehaviorManager.BehaviorAssemblerRecord, parent: BehaviorManager.BehaviorAssemblerRecord } {
+    let recordToRemove: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[id];
+  
+    if (!recordToRemove) {
       return;
     }
   
-    let parent = this.behaviorRecords[behaviorRecordToDeactivate.parent];
-    // let disableParent = O
-    //
-    // delete this.behaviorRecords[id];
-    // delete this.behaviorsToUpdate[id];
-    // delete parent.activeChildren[behaviorRecordToDeactivate.]
-    
-    
+    let parent: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[recordToRemove.parent];
+    let behaviorName: string = recordToRemove.assembler.getConfig().name;
+  
+    if (parent.assembler.getConfig().requiredChildren[behaviorName]) {
+      removefn(recordToRemove.parent);
+    }
+  
+    delete this.behaviorRecords[id];
+    delete this.behaviorsToUpdate[id];
+    delete parent.activeChildren[behaviorName];
+    return { behaviorName: recordToRemove, parent: parent };
   }
   
   private tryToActivateRecord (record: BehaviorManager.BehaviorAssemblerRecord) {
@@ -158,6 +190,7 @@ export namespace BehaviorManager {
     inactiveChildren: any = {};
     activeChildren: any = {};
     parent: string;
+    name: string;
   
     /**
      * @param assembler - Assembler to record
@@ -165,6 +198,7 @@ export namespace BehaviorManager {
     constructor (assembler: BehaviorAssembler, parentId: string) {
       this.assembler = assembler;
       this.parent = parentId;
+      this.name = assembler.getConfig().name;
     }
   }
 }

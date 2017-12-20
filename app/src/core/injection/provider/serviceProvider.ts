@@ -1,5 +1,5 @@
 import {getConstructorName} from "../metaDecorators";
-import {Service} from "./service";
+import {Service} from "../../service/service";
 
 export class ServiceProvider {
   

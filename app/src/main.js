@@ -1,11 +1,11 @@
 require(
   [
     'core/engine',
-    'core/services/serviceProvider',
-    'core/behaviors/behaviorProvider',
+    'core/injection/provider/serviceProvider',
+    'core/injection/provider/behaviorProvider',
     'core/behaviors/scene',
     'core/behaviors/transform',
-    'core/services/utilsService'
+    'core/util/utilsService'
   ],
   function (idk) {
     console.log('main.js done');

@@ -1,10 +1,11 @@
-import {BehaviorManager} from "./behaviors/behaviorManager";
-import {UtilsService} from "./services/utilsService";
-import {ServiceProvider} from "./services/serviceProvider";
+import {BehaviorManager} from "./behavior/behaviorManager";
+import {UtilsService} from "./util/utilsService";
+import {ServiceProvider} from "./injection/provider/serviceProvider";
 import {Scene} from "./behaviors/scene";
-import {Behavior} from "./behaviors/behavior";
-import {BehaviorAssembler} from "./behaviors/behaviorAssembler";
-import {Metronome} from "./metronome";
+import {Behavior} from "./behavior/behavior";
+import {BehaviorAssembler} from "./injection/behaviorAssembler";
+import {Metronome} from "./chrono/metronome";
+import {GameObject} from "./behavior/gameObject";
 
 export class Engine {
   
@@ -26,7 +27,7 @@ export class Engine {
     this.initialized = true;
     callback(scene);
     
-    Engine.metronome.start();
+    Engine.metronome.start(1);
     Engine.metronome.registerToTicks(Engine.onTick);
   }
   
@@ -36,8 +37,8 @@ export class Engine {
     return Engine.behaviorManager.findBehavior(behaviorId);
   }
   
-  public static getParentBehavior (id: string): Behavior {
-    return Engine.behaviorManager.getParentBehavior(id);
+  public static getParentBehavior (behaviorId: string): Behavior {
+    return Engine.behaviorManager.getParentBehavior(behaviorId);
   }
   
   public static attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): BehaviorAssembler {
@@ -48,8 +49,12 @@ export class Engine {
     return Engine.behaviorManager.getBehavior(behavior, from);
   }
   
-  public static getChildrenBehaviors (id: string): Array<Behavior> {
-    return Engine.behaviorManager.getChildrenBehaviors(id);
+  public static getChildrenBehaviors (behaviorId: string): Array<Behavior> {
+    return Engine.behaviorManager.getChildrenBehaviors(behaviorId);
+  }
+  
+  public static deactivateBehavior (behaviorId: string) {
+    return Engine.behaviorManager.deactivateBehavior(behaviorId);
   }
   
   

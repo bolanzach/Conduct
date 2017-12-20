@@ -1,4 +1,4 @@
-import {BehaviorAssembler} from "./behaviorAssembler";
+import {BehaviorAssembler} from "../behaviorAssembler";
 
 export class BehaviorProvider {
   
@@ -41,7 +41,7 @@ export class BehaviorProvider {
     BehaviorProvider.injectionArgs[behavior] = requiredArgs;
   }
   
-  public static addRequireChildBehavior (parent: string, child: string) {
+  public static addRequiredChildBehavior (parent: string, child: string) {
     let requiredChildren = (BehaviorProvider.registered[parent] || {}).requiredChildren;
     
     if (!requiredChildren) {

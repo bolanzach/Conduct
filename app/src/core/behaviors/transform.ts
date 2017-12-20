@@ -1,5 +1,5 @@
-import {RegisterBehavior} from "../metaDecorators";
-import {Behavior} from "./behavior";
+import {RegisterBehavior} from "../injection/metaDecorators";
+import {Behavior} from "../behavior/behavior";
 
 @RegisterBehavior()
 export class Transform extends Behavior {

@@ -7,7 +7,7 @@ export class BehaviorAssembler {
   }
   
   public as (injectAs: string): BehaviorAssembler {
-    this.config.name = injectAs;
+    // nothing yet.
     return this;
   }
   

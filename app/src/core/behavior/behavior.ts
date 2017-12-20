@@ -1,8 +1,8 @@
-import {BehaviorAssembler} from './behaviorAssembler';
-import {RegisterBehavior} from '../metaDecorators';
-import {UtilsService} from "../services/utilsService";
-import {ServiceProvider} from "../services/serviceProvider";
 import {Engine} from "../engine";
+import {UtilsService} from "../util/utilsService";
+import {BehaviorAssembler} from '../injection/behaviorAssembler';
+import {RegisterBehavior} from '../injection/metaDecorators';
+import {ServiceProvider} from "../injection/provider/serviceProvider";
 
 @RegisterBehavior()
 export abstract class Behavior {
@@ -23,6 +23,8 @@ export abstract class Behavior {
   
   public deactivate () {
     this.active = false;
+    Engine.deactivateBehavior(this.getId());
+    this.getChildren().forEach((childBehavior) => childBehavior.deactivate());
   }
   
   public destroy () {

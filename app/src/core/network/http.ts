@@ -1,5 +1,5 @@
-import {Service} from "../services/service";
-import {RegisterService} from "../metaDecorators";
+import {Service} from "../service/service";
+import {RegisterService} from "../injection/metaDecorators";
 
 @RegisterService()
 export class Http implements Service {

@@ -1,6 +1,6 @@
-import {Behavior} from "./behavior";
+import {Behavior} from "../behavior/behavior";
 import {Transform} from "./transform";
-import {Inject, RegisterBehavior} from "../metaDecorators";
+import {Inject, RegisterBehavior} from "../injection/metaDecorators";
 
 @RegisterBehavior()
 export class TestBehavior extends Behavior {
