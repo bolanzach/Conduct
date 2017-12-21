@@ -5,12 +5,18 @@ import {RegisterBehavior, Required} from "../injection/metaDecorators";
 @RegisterBehavior()
 export abstract class GameObject extends Behavior {
   
+  protected config: any;
+  
   @Required
   private transform: Transform;
   
-  constructor () {
+  constructor (config: any) {
     super();
-    this.addBehavior(Transform);
+    this.config = config;
+  }
+  
+  onAwake () {
+    this.addBehavior(Transform)(this.config);
   }
 
 }

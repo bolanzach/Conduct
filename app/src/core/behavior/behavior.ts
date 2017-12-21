@@ -21,6 +21,8 @@ export abstract class Behavior {
   
   public abstract update ();
   
+  public onAwake () {}
+  
   public activate () {
     this.active = true;
   }

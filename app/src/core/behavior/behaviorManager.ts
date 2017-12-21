@@ -111,7 +111,7 @@ export class BehaviorManager {
     let behaviorName: string = assemblerToDestroy.name;
   
     if (parent.record.requiredChildren[behaviorName]) {
-      this.destroyBehavior(assemblerToDestroy.parent);
+      this.destroy(assemblerToDestroy.parent);
     }
   
     delete this.assemblers[id];
@@ -193,8 +193,11 @@ export class BehaviorManager {
     
     behavior = new config.clazz(...dependencies);
     id = behavior.getId();
+    
     this.behaviorsToUpdate[id] = behavior;
     this.assemblers[id] = assembler;
+    
+    behavior.onAwake();
     return behavior;
   }
   

@@ -1,24 +1,18 @@
 import {RegisterBehavior} from "../injection/metaDecorators";
 import {GameObject} from "../behavior/gameObject";
+import {Transform} from "./transform";
 
 @RegisterBehavior()
 export class TestBehavior extends GameObject {
   
   private name: string;
   
-  constructor (config: TestBehaviorConfig) {
-    super();
-    this.name = config.z;
+  constructor (config: any) {
+    super(config);
+    this.config = config;
   }
   
   update () {
-    console.log(this.name);
-  }
-}
-
-export class TestBehaviorConfig {
-  z: string;
-  constructor (z: string) {
-    this.z = z;
+    console.log(this.getBehavior(Transform));
   }
 }

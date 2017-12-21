@@ -24,7 +24,7 @@ export class Engine {
     
     
   
-    scene.addBehavior(TestBehavior)({ z: 'zach' });
+    scene.addBehavior(TestBehavior)({ x: 100 });
     
 
     
