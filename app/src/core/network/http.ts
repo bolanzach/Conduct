@@ -12,7 +12,7 @@ export class Http implements Service {
     return this.makeRequest('GET', url, null, callback);
   }
   
-  public post (url: string, requestBody: any, header: any, callback?: Function) {
+  public post (url: string, requestBody: any, callback?: Function) {
     return this.makeRequest('POST', url, requestBody, callback);
   }
   

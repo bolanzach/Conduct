@@ -1,22 +1,40 @@
+import {BehaviorRecord} from "./provider/behaviorRecord";
 
 export class BehaviorAssembler {
-  private config: any;
+  private _record: BehaviorRecord;
+  private _inactiveChildren: any = {};
+  private _activeChildren: any = {};
+  private _childrenAssemblerConfigs = {};
+  private _parent: string;
+  private _name: string;
   
-  constructor (registeredBehavior: any) {
-    this.config = registeredBehavior;
+  constructor (record: BehaviorRecord, parentId: string) {
+    this._record = record;
+    this._parent = parentId;
+    this._name = record.name;
   }
   
-  public as (injectAs: string): BehaviorAssembler {
-    // nothing yet.
-    return this;
+  get record(): BehaviorRecord {
+    return this._record;
   }
   
-  public assemble (configuration: any): BehaviorAssembler {
-    this.config.config = configuration;
-    return this;
+  get inactiveChildren(): any {
+    return this._inactiveChildren;
   }
   
-  public getConfig (): any {
-    return this.config;
+  get activeChildren(): any {
+    return this._activeChildren;
+  }
+  
+  get childrenAssemblerConfigs(): {} {
+    return this._childrenAssemblerConfigs;
+  }
+  
+  get parent(): string {
+    return this._parent;
+  }
+  
+  get name(): string {
+    return this._name;
   }
 }

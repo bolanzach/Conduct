@@ -3,18 +3,19 @@ import {BehaviorAssembler} from "../injection/behaviorAssembler";
 import {BehaviorProvider} from "../injection/provider/behaviorProvider";
 import {getConstructorName} from "../injection/metaDecorators";
 import {Scene} from "../behaviors/scene";
+import {BehaviorRecord} from "../injection/provider/behaviorRecord";
 
 export class BehaviorManager {
 
   private behaviorsToUpdate: any = {};
-  private behaviorRecords: any = {};
+  private assemblers: any = {};
   
   constructor () {}
   
   public initScene (): Scene {
-    let stageBehaviorAssembler: BehaviorAssembler = BehaviorProvider.get('Scene');
-    let record: BehaviorManager.BehaviorAssemblerRecord = new BehaviorManager.BehaviorAssemblerRecord(stageBehaviorAssembler, null);
-    let sceneBehavior = this.constructBehaviorFromRecord(record, null);
+    let newRecord: BehaviorRecord = BehaviorProvider.get('scene');
+    let newAssembler = new BehaviorAssembler(newRecord, null);
+    let sceneBehavior = this.constructBehavior(newAssembler, null);
     return sceneBehavior as Scene;
   }
   
@@ -22,42 +23,45 @@ export class BehaviorManager {
     Object.keys(this.behaviorsToUpdate || {}).forEach(behaviorKey => this.behaviorsToUpdate[behaviorKey].update());
   }
 
-  public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): BehaviorAssembler {
+  public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (configuration?: any) => void {
     let newBehaviorName = getConstructorName(attach);
-    let newBehaviorAssembler = BehaviorProvider.get(newBehaviorName);
-    let newBehaviorRecord = new BehaviorManager.BehaviorAssemblerRecord(newBehaviorAssembler, to);
-    let activeBehaviorRecord = this.behaviorRecords[to];
+    let newRecord = BehaviorProvider.get(newBehaviorName);
+    let newAssembler = new BehaviorAssembler(newRecord, to);
+    let activeAssembler: BehaviorAssembler = this.assemblers[to];
     
-    if (!activeBehaviorRecord) {
+    if (!activeAssembler) {
       return; // no behavior to attach to
     }
     
-    if (activeBehaviorRecord.inactiveChildren[newBehaviorName] || activeBehaviorRecord.activeChildren[newBehaviorName]) {
+    if (activeAssembler.inactiveChildren[newBehaviorName] || activeAssembler.activeChildren[newBehaviorName]) {
       return; // ? this behavior type is already attached
     }
     
-    activeBehaviorRecord.inactiveChildren[newBehaviorName] = newBehaviorRecord;
-    this.tryToActivateRecord(activeBehaviorRecord);
-    return newBehaviorAssembler;
+    activeAssembler.inactiveChildren[newBehaviorName] = newAssembler;
+    
+    return (configuration?: any) => {
+      activeAssembler.childrenAssemblerConfigs[newBehaviorName] = configuration || {};
+      this.activateAssemblerChildren(activeAssembler);
+    };
   }
   
   public getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T, from: string): T {
-    let parentBehavior: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[from];
+    let parentBehavior: BehaviorAssembler = this.assemblers[from];
     
     if (!parentBehavior) {
       return null;
     }
     
-    let record = parentBehavior.activeChildren[getConstructorName(behavior)] || {};
-    return record.behavior;
+    let assembler = parentBehavior.activeChildren[getConstructorName(behavior)] || {};
+    return assembler.behavior;
   }
   
-  public findBehavior (id: string): Behavior | undefined {
+  public find (id: string): Behavior | undefined {
     return this.behaviorsToUpdate[id];
   }
   
-  public getChildrenBehaviors (id: string): Array<Behavior> {
-    let parentBehavior: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[id];
+  public getChildren (id: string): Array<Behavior> {
+    let parentBehavior: BehaviorAssembler = this.assemblers[id];
     
     if (!parentBehavior) {
       return [];
@@ -69,9 +73,9 @@ export class BehaviorManager {
     });
   }
   
-  public getParentBehavior (id: string) {
-    let childRecord = this.behaviorRecords[id];
-    return this.findBehavior((childRecord || {}).parent);
+  public getParent (id: string) {
+    let childRecord = this.assemblers[id];
+    return this.find((childRecord || {}).parent);
   }
   
   /**
@@ -83,9 +87,8 @@ export class BehaviorManager {
    *
    * @param {string} id
    */
-  public deactivateBehavior (id: string) {
-    let result = this.removeRecord(id, this.deactivateBehavior);
-    //result.parent.inactiveChildren[result.behaviorName] = recordToDeactivate;
+  public deactivate (id: string) {
+    //
   }
   
   /**
@@ -97,108 +100,103 @@ export class BehaviorManager {
    *
    * @param {string} id
    */
-  public destroyBehavior (id: string) {
-    let result = this.removeRecord(id, this.destroyBehavior);
-    //delete result.parent.inactiveChildren[result.behaviorName];
-  }
+  public destroy (id: string) {
+    let assemblerToDestroy: BehaviorAssembler = this.assemblers[id];
   
-  private removeRecord (id: string, removefn: Function)
-  : { behaviorName: BehaviorManager.BehaviorAssemblerRecord, parent: BehaviorManager.BehaviorAssemblerRecord } {
-    let recordToRemove: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[id];
-  
-    if (!recordToRemove) {
+    if (!assemblerToDestroy) {
       return;
     }
   
-    let parent: BehaviorManager.BehaviorAssemblerRecord = this.behaviorRecords[recordToRemove.parent];
-    let behaviorName: string = recordToRemove.assembler.getConfig().name;
+    let parent: BehaviorAssembler= this.assemblers[assemblerToDestroy.parent];
+    let behaviorName: string = assemblerToDestroy.name;
   
-    if (parent.assembler.getConfig().requiredChildren[behaviorName]) {
-      removefn(recordToRemove.parent);
+    if (parent.record.requiredChildren[behaviorName]) {
+      this.destroyBehavior(assemblerToDestroy.parent);
     }
   
-    delete this.behaviorRecords[id];
+    delete this.assemblers[id];
     delete this.behaviorsToUpdate[id];
     delete parent.activeChildren[behaviorName];
-    return { behaviorName: recordToRemove, parent: parent };
+    delete parent.inactiveChildren[behaviorName];
   }
   
-  private tryToActivateRecord (record: BehaviorManager.BehaviorAssemblerRecord) {
-    let behaviorCreated: boolean = false;
-    let inactiveChildren = record.inactiveChildren || {};
+  private activateAssemblerChildren (assembler: BehaviorAssembler) {
+    let inactiveChildren = assembler.inactiveChildren || {};
     
-    Object.keys(inactiveChildren).forEach((behaviorType: string) => {
-      let inactiveBehavior = inactiveChildren[behaviorType];
-      let dependencies = inactiveBehavior.assembler.getConfig().args;
-      let allDependenciesSatisfied = (dependencies || []).every(arg => !!record.activeChildren[arg]);
+    let behaviorCreated: boolean = Object.keys(inactiveChildren).some((behaviorType: string) => {
+      let assemblerToActivate = inactiveChildren[behaviorType];
+      let canActivate = this.canActivate(assemblerToActivate, assembler);
       
-      if (!allDependenciesSatisfied) {
+      if (!canActivate) {
         return;
       }
       
-      behaviorCreated = true;
+      // Create the behavior
       delete inactiveChildren[behaviorType];
-      record.activeChildren[behaviorType] = {
-        record: inactiveBehavior,
-        behavior: this.constructBehaviorFromRecord(inactiveBehavior, record)
+      assembler.activeChildren[behaviorType] = {
+        assembler: assemblerToActivate,
+        behavior: this.constructBehavior(assemblerToActivate, assembler)
       };
+      
+      // Recursively try to create the new Behavior's children
+      this.activateAssemblerChildren(assemblerToActivate);
+      return canActivate;
     });
     
+    // If a behavior was created and added it may allow others to be created
     if (behaviorCreated) {
-      this.tryToActivateRecord(record);
+      this.activateAssemblerChildren(assembler);
     }
   }
   
   /**
-   * Constructs a new Behavior from a Record and sets it up to respond to Updates
-   * @param behaviorRecord
-   * @returns {Behavior}
+   * Checks if the parentAssembler satisfies all the dependencies for the assemblerToCheck.
+   * A dependency is satisfied if the parent has all active Behaviors required by the Assembler.
+   * This function ignores the special Config dependency
+   *
+   * @param {BehaviorAssembler} assemblerToCheck
+   * @param {BehaviorAssembler} parentAssembler
+   * @return {boolean}
    */
-  private constructBehaviorFromRecord (behaviorRecord: BehaviorManager.BehaviorAssemblerRecord, parentRecord: BehaviorManager.BehaviorAssemblerRecord): Behavior {
+  private canActivate (assemblerToCheck: BehaviorAssembler, parentAssembler: BehaviorAssembler): boolean {
+    let dependencies = assemblerToCheck.record.args;
+    return dependencies.every((arg) => {
+      return arg === 'CONFIG' || !!parentAssembler.activeChildren[arg];
+    });
+  }
+  
+  /**
+   * Creates a new Behavior from an Assembler.
+   * Registers the Assembler to the assemblers map and allows the new Behavior to be updated
+   *
+   * Warning: this does not check if the assembler can be activated and if all its dependencies have
+   * been satisfied. Run canActivate before calling this.
+   *
+   * @param {BehaviorAssembler} assembler
+   * @param {BehaviorAssembler} parentAssembler
+   * @return {Behavior}
+   */
+  private constructBehavior (assembler: BehaviorAssembler, parentAssembler: BehaviorAssembler): Behavior {
     let behavior: Behavior;
     let id: string;
     let dependencies = [];
-    let config = behaviorRecord.assembler.getConfig();
+    let config = assembler.record;
     
-    if (parentRecord) {
-      let activeBehaviors = parentRecord.activeChildren || {};
-      dependencies = (config.args || []).map(arg => activeBehaviors[arg].behavior);
+    if (parentAssembler) {
+      let activeBehaviors = parentAssembler.activeChildren;
+      dependencies = (config.args || []).map(arg => {
+        return activeBehaviors[arg] ?
+          activeBehaviors[arg].behavior :
+          parentAssembler.childrenAssemblerConfigs[assembler.name];
+      });
     }
     
     behavior = new config.clazz(...dependencies);
-    //* or alternatively */behavior = new (Function.prototype.bind.apply(config.clazz, dependencies));
-    
     id = behavior.getId();
     this.behaviorsToUpdate[id] = behavior;
-    this.behaviorRecords[id] = behaviorRecord;
+    this.assemblers[id] = assembler;
     return behavior;
   }
   
 }
 
-
-/**
- * An internal class that "records" BehaviorAssemblers.
- * Assemblers are objects clients use to configure a new Behavior before it is constructed. When a client attaches
- * an Assembler to an existing Behavior the Assembler is recorded (registered) in the BehaviorManager. When all
- * the Recorded BehaviorAssembler's dependencies have been met and it is ready to be constructed, the Manager uses
- * the BehaviorAssemblerRecord to create a new Behavior class.
- */
-export namespace BehaviorManager {
-  export class BehaviorAssemblerRecord {
-    assembler: BehaviorAssembler;
-    inactiveChildren: any = {};
-    activeChildren: any = {};
-    parent: string;
-    name: string;
-  
-    /**
-     * @param assembler - Assembler to record
-     */
-    constructor (assembler: BehaviorAssembler, parentId: string) {
-      this.assembler = assembler;
-      this.parent = parentId;
-      this.name = assembler.getConfig().name;
-    }
-  }
-}

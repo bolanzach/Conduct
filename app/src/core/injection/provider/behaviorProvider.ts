@@ -1,4 +1,5 @@
 import {BehaviorAssembler} from "../behaviorAssembler";
+import {BehaviorRecord} from "./behaviorRecord";
 
 export class BehaviorProvider {
   
@@ -11,23 +12,22 @@ export class BehaviorProvider {
       return;
     }
     
-    BehaviorProvider.registered[behaviorName] = {
-      name: behaviorName,
-      clazz: clazz,
-      args: BehaviorProvider.injectionArgs[behaviorName] || [],
-      requiredChildren: BehaviorProvider.requiredChildren[behaviorName] || []
-    };
+    BehaviorProvider.registered[behaviorName] = new BehaviorRecord(
+      behaviorName,
+      clazz,
+      args,
+      BehaviorProvider.requiredChildren[behaviorName]);
   }
   
-  public static get (behaviorName: string): BehaviorAssembler {
-    let registeredBehavior: any = BehaviorProvider.registered[behaviorName];
+  public static get (behaviorName: string): BehaviorRecord {
+    let registeredBehavior: BehaviorRecord = BehaviorProvider.registered[behaviorName.toUpperCase()];
     
     if (!registeredBehavior) {
       console.error('No Behavior has been registered of type ', behaviorName);
       return;
     }
     
-    return new BehaviorAssembler(registeredBehavior);
+    return registeredBehavior
   }
   
   public static addInjectionRequirement (behavior, injectable, index) {

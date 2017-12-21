@@ -3,9 +3,9 @@ import {UtilsService} from "./util/utilsService";
 import {ServiceProvider} from "./injection/provider/serviceProvider";
 import {Scene} from "./behaviors/scene";
 import {Behavior} from "./behavior/behavior";
-import {BehaviorAssembler} from "./injection/behaviorAssembler";
 import {Metronome} from "./chrono/metronome";
 import {GameObject} from "./behavior/gameObject";
+import {TestBehavior} from "./behaviors/testBehavior";
 
 export class Engine {
   
@@ -21,6 +21,11 @@ export class Engine {
     Engine.metronome = new Metronome();
     Engine.behaviorManager = new BehaviorManager();
     let scene: Scene = (Engine.behaviorManager.initScene());
+    
+    
+  
+    scene.addBehavior(TestBehavior)({ z: 'zach' });
+    
 
     
     
@@ -31,30 +36,8 @@ export class Engine {
     Engine.metronome.registerToTicks(Engine.onTick);
   }
   
-  
-  
-  public static findBehavior (behaviorId: string): Behavior {
-    return Engine.behaviorManager.findBehavior(behaviorId);
-  }
-  
-  public static getParentBehavior (behaviorId: string): Behavior {
-    return Engine.behaviorManager.getParentBehavior(behaviorId);
-  }
-  
-  public static attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): BehaviorAssembler {
-    return Engine.behaviorManager.attachBehaviorToBehavior(attach, to);
-  }
-  
-  public static getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T, from: string): T {
-    return Engine.behaviorManager.getBehavior(behavior, from);
-  }
-  
-  public static getChildrenBehaviors (behaviorId: string): Array<Behavior> {
-    return Engine.behaviorManager.getChildrenBehaviors(behaviorId);
-  }
-  
-  public static deactivateBehavior (behaviorId: string) {
-    return Engine.behaviorManager.deactivateBehavior(behaviorId);
+  public static Behaviors (): BehaviorManager {
+    return Engine.behaviorManager;
   }
   
   

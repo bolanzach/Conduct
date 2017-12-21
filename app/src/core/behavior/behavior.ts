@@ -21,26 +21,31 @@ export abstract class Behavior {
   
   public abstract update ();
   
+  public activate () {
+    this.active = true;
+  }
+  
   public deactivate () {
     this.active = false;
-    Engine.deactivateBehavior(this.getId());
+    Engine.Behaviors().deactivate(this.getId());
     this.getChildren().forEach((childBehavior) => childBehavior.deactivate());
   }
   
   public destroy () {
-  
+    Engine.Behaviors().destroy(this.getId());
+    this.getChildren().forEach((childBehavior) => childBehavior.destroy());
   }
   
-  public addBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): BehaviorAssembler {
-    return Engine.attachBehaviorToBehavior(behavior, this.getId());
+  public addBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): (configuration?: any) => void {
+    return Engine.Behaviors().attachBehaviorToBehavior(behavior, this.getId());
   }
   
   public getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): T {
-    return Engine.getBehavior(behavior, this.getId());
+    return Engine.Behaviors().getBehavior(behavior, this.getId());
   }
   
   public getChildren (): Array<Behavior> {
-    return Engine.getChildrenBehaviors(this.getId());
+    return Engine.Behaviors().getChildren(this.getId());
   }
   
   public isActive (): boolean {
@@ -52,7 +57,7 @@ export abstract class Behavior {
   }
   
   public getParent (): Behavior {
-    return Engine.getParentBehavior(this.getId());
+    return Engine.Behaviors().getParent(this.getId());
   }
   
 }

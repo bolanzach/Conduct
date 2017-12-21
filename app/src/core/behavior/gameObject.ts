@@ -5,7 +5,7 @@ import {RegisterBehavior, Required} from "../injection/metaDecorators";
 @RegisterBehavior()
 export abstract class GameObject extends Behavior {
   
-  @Required()
+  @Required
   private transform: Transform;
   
   constructor () {
