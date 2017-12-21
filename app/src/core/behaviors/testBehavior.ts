@@ -1,6 +1,5 @@
 import {RegisterBehavior} from "../injection/metaDecorators";
 import {GameObject} from "../behavior/gameObject";
-import {Transform} from "./transform";
 
 @RegisterBehavior()
 export class TestBehavior extends GameObject {
@@ -13,6 +12,10 @@ export class TestBehavior extends GameObject {
   }
   
   update () {
-    //console.log(this.getBehavior(Transform));
+  
   }
+  
+  // onAwake () {
+  //   console.log('adsf');
+  // }
 }

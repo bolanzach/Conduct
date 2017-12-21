@@ -9,6 +9,7 @@ export class BehaviorManager {
 
   private behaviorsToUpdate: any = {};
   private assemblers: any = {};
+  private idk: any = {};
   
   constructor () {}
   
@@ -30,7 +31,16 @@ export class BehaviorManager {
     let activeAssembler: BehaviorAssembler = this.assemblers[to];
     
     if (!activeAssembler) {
-      return; // no behavior to attach to
+      let a = this.idk[to];
+      this.idk[to] = a ? a[newBehaviorName].z.push(newAssembler) : { z: [newAssembler] };
+      return (configuration?: any) => {
+        let a = this.idk[to];
+        if (a) {
+          a.config = configuration || {};
+        } else {
+          // do regular stuff
+        }
+      };
     }
     
     if (activeAssembler.inactiveChildren[newBehaviorName] || activeAssembler.activeChildren[newBehaviorName]) {
@@ -199,6 +209,17 @@ export class BehaviorManager {
     
     behavior.onAwake();
     return behavior;
+  }
+  
+  private panic (id: string) {
+    let p = this.idk[id];
+    let assembler: BehaviorAssembler = this.assemblers[id];
+    
+    if (p) {
+      Object.keys(p.z).forEach((key) => {
+        assembler.inactiveChildren[key] = p.z[key];
+      });
+    }
   }
   
 }

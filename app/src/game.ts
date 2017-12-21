@@ -8,7 +8,11 @@ Engine.Init({}, function (scene: Scene) {
   scene.addBehavior(TestBehavior)({x: 10, y: 25, rotation: 100});
   
   let t: TestBehavior = scene.getBehavior(TestBehavior);
-  console.log(t);
+  console.log(scene.getChildren());
+  
+  t.getTransform().destroy();
+  
+  console.log(scene.getChildren());
   
   console.log(t.getBehavior(Transform));
 });

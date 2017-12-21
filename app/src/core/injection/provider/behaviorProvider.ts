@@ -1,10 +1,8 @@
-import {BehaviorAssembler} from "../behaviorAssembler";
 import {BehaviorRecord} from "./behaviorRecord";
 
 export class BehaviorProvider {
   
   private static registered: any = {};
-  private static injectionArgs: any = {};
   private static requiredChildren: any = {};
   
   public static inject (behaviorName: string, args: Array<string>, clazz: any) {
@@ -16,7 +14,7 @@ export class BehaviorProvider {
       behaviorName,
       clazz,
       args,
-      BehaviorProvider.requiredChildren[behaviorName]);
+      BehaviorProvider.requiredChildren[behaviorName] || {});
   }
   
   public static get (behaviorName: string): BehaviorRecord {
@@ -30,25 +28,14 @@ export class BehaviorProvider {
     return registeredBehavior
   }
   
-  public static addInjectionRequirement (behavior, injectable, index) {
-    let requiredArgs = (BehaviorProvider.registered[behavior] || {}).args;
-  
-    if (!requiredArgs) {
-      requiredArgs = BehaviorProvider.injectionArgs[behavior] || [];
-    }
-  
-    requiredArgs[index] = injectable;
-    BehaviorProvider.injectionArgs[behavior] = requiredArgs;
-  }
-  
   public static addRequiredChildBehavior (parent: string, child: string) {
     let requiredChildren = (BehaviorProvider.registered[parent] || {}).requiredChildren;
     
     if (!requiredChildren) {
-      requiredChildren = BehaviorProvider.requiredChildren[parent] || [];
+      requiredChildren = BehaviorProvider.requiredChildren[parent] || {};
     }
     
-    requiredChildren.push(child);
+    requiredChildren[child] = true;
     BehaviorProvider.requiredChildren[parent] = requiredChildren;
   }
 }

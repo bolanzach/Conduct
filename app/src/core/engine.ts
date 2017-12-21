@@ -18,11 +18,11 @@ export class Engine {
     Engine.behaviorManager = new BehaviorManager();
     let scene: Scene = (Engine.behaviorManager.initScene());
     
-    this.initialized = true;
-    callback(scene);
-    
     Engine.metronome.start(1);
     Engine.metronome.registerToTicks(Engine.onTick);
+  
+    this.initialized = true;
+    callback(scene);
   }
   
   public static Behaviors (): BehaviorManager {

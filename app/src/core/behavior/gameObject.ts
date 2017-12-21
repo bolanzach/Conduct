@@ -8,7 +8,7 @@ export abstract class GameObject extends Behavior {
   protected config: any;
   
   @Required
-  private transform: Transform;
+  protected transform: Transform;
   
   constructor (config: any) {
     super();
@@ -17,6 +17,10 @@ export abstract class GameObject extends Behavior {
   
   onAwake () {
     this.addBehavior(Transform)(this.config);
+  }
+  
+  public getTransform (): Transform {
+    return this.getBehavior(Transform);
   }
 
 }
