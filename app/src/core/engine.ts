@@ -1,11 +1,7 @@
 import {BehaviorManager} from "./behavior/behaviorManager";
-import {UtilsService} from "./util/utilsService";
-import {ServiceProvider} from "./injection/provider/serviceProvider";
 import {Scene} from "./behaviors/scene";
-import {Behavior} from "./behavior/behavior";
 import {Metronome} from "./chrono/metronome";
-import {GameObject} from "./behavior/gameObject";
-import {TestBehavior} from "./behaviors/testBehavior";
+
 
 export class Engine {
   
@@ -22,13 +18,6 @@ export class Engine {
     Engine.behaviorManager = new BehaviorManager();
     let scene: Scene = (Engine.behaviorManager.initScene());
     
-    
-  
-    scene.addBehavior(TestBehavior)({ x: 100 });
-    
-
-    
-    
     this.initialized = true;
     callback(scene);
     
@@ -42,10 +31,9 @@ export class Engine {
   
   
   
+  
   private static onTick (delta) {
     Engine.behaviorManager.update();
   }
-  
-  
   
 }

@@ -13,6 +13,6 @@ export class TestBehavior extends GameObject {
   }
   
   update () {
-    console.log(this.getBehavior(Transform));
+    //console.log(this.getBehavior(Transform));
   }
 }
