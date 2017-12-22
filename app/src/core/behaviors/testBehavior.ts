@@ -15,7 +15,7 @@ export class TestBehavior extends GameObject {
   
   }
   
-  // onAwake () {
-  //   console.log('adsf');
-  // }
+  onAwake () {
+  
+  }
 }

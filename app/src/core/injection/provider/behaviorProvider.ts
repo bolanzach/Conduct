@@ -35,7 +35,7 @@ export class BehaviorProvider {
       requiredChildren = BehaviorProvider.requiredChildren[parent] || {};
     }
     
-    requiredChildren[child] = true;
+    requiredChildren[child.toUpperCase()] = true;
     BehaviorProvider.requiredChildren[parent] = requiredChildren;
   }
 }

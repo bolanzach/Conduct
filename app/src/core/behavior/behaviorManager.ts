@@ -9,6 +9,7 @@ export class BehaviorManager {
 
   private behaviorsToUpdate: any = {};
   private assemblers: any = {};
+  private requiredChildren = {};
   private idk: any = {};
   
   constructor () {}
@@ -117,17 +118,48 @@ export class BehaviorManager {
       return;
     }
   
-    let parent: BehaviorAssembler= this.assemblers[assemblerToDestroy.parent];
+    let parentId: string = assemblerToDestroy.parent;
+    let parent: BehaviorAssembler = this.assemblers[parentId];
     let behaviorName: string = assemblerToDestroy.name;
   
-    if (parent.record.requiredChildren[behaviorName]) {
-      this.destroy(assemblerToDestroy.parent);
+    if (this.parentRequiresChild(parentId, behaviorName)) {
+      this.destroy(parentId);
     }
   
     delete this.assemblers[id];
     delete this.behaviorsToUpdate[id];
     delete parent.activeChildren[behaviorName];
     delete parent.inactiveChildren[behaviorName];
+  }
+  
+  /**
+   * Behaviors can require that certain child Behaviors exist. When a Behavior is destroyed or deactivated and
+   * its parent requires it, the parent Behavior must be deactivated.
+   * This function recursively traverses up the parent Behavior's prototype chain checking if it or any of
+   * its super classes require the behavior that was removed.
+   *
+   * @param {string} parentId
+   * @param {string} behaviorName
+   * @returns {boolean}
+   */
+  private parentRequiresChild (parentId: string, behaviorName: string): boolean {
+    let parent = this.behaviorsToUpdate[parentId];
+    let recursiveLookup = (proto, behaviorName) => {
+      let parentProto = Object.getPrototypeOf(proto);
+      if (!parentProto) {
+        return;
+      }
+      
+      let record = BehaviorProvider.get(getConstructorName(proto.constructor));
+      let isRequired = Object.keys((record.requiredChildren || {})).some(behavior => behavior === behaviorName);
+      return isRequired || recursiveLookup(parentProto, behaviorName);
+    };
+
+    if (!parent) {
+      return;
+    }
+    
+    return recursiveLookup(parent, behaviorName);
   }
   
   private activateAssemblerChildren (assembler: BehaviorAssembler) {
@@ -210,6 +242,8 @@ export class BehaviorManager {
     behavior.onAwake();
     return behavior;
   }
+  
+  
   
   private panic (id: string) {
     let p = this.idk[id];
