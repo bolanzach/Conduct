@@ -4,13 +4,13 @@ import {Metronome} from "./chrono/metronome";
 import {RendererProvider} from "./view/rendererProvider";
 import {EngineConfig} from "./engineConfig";
 import {ServiceProvider} from "./injection/provider/serviceProvider";
+import {RenderService} from "./view/renderService";
 
 export class Engine {
   
   private static initialized: boolean = false;
   private static behaviorManager: BehaviorManager;
   private static metronome: Metronome;
-  private static serviceProiver: ServiceProvider;
   
   public static Init (config: EngineConfig, callback: Function) {
     if (this.initialized) {
@@ -20,8 +20,7 @@ export class Engine {
     Engine.metronome = new Metronome();
     Engine.behaviorManager = new BehaviorManager();
     
-    Engine.createCanvas(config.getCanvasId());
-    ServiceProvider.get(RendererProvider).setRenderer(config.getContext());
+    Engine.setupView(config);
     let scene: Scene = (Engine.behaviorManager.initScene());
     
     Engine.metronome.start(1);
@@ -36,8 +35,14 @@ export class Engine {
   }
   
   
-  private static createCanvas (id: string) {
-    document.getElementById(id).innerHTML = '<canvas id="engine-view" style="width: 100%; height: 100%"></canvas>';
+  private static setupView (config: EngineConfig) {
+    let canvas = document.getElementById(config.getCanvasId());
+    
+    if (canvas) {
+      let renderProvider: RendererProvider = ServiceProvider.get(RendererProvider);
+      renderProvider.setRenderer(config.getContext());
+      renderProvider.get().setCanvas(config.getCanvasId());
+    }
   }
   
   private static onTick (delta) {

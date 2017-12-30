@@ -1,7 +1,9 @@
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 import {RenderService} from "./renderService";
 import {CanvasRender2DService} from "./canvasRender2DService";
+import {RegisterService} from "../injection/metaDecorators";
 
+@RegisterService()
 export class RendererProvider {
   
   private renderService: RenderService;
