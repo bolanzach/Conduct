@@ -17,10 +17,7 @@ export abstract class GameObject extends Behavior {
   
   onAwake () {
     this.addBehavior(Transform)(this.config);
-  }
-  
-  public getTransform (): Transform {
-    return this.getBehavior(Transform);
+    this.transform = this.getBehavior(Transform);
   }
 
 }

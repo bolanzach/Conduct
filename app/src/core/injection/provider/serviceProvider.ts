@@ -13,7 +13,7 @@ export class ServiceProvider {
    * @param constructor
    */
   public inject (serviceName: string, args: Array<string>, constructor: any) {
-    if (ServiceProvider.registered[serviceName]) {
+    if (ServiceProvider.registered[serviceName] || ServiceProvider.injected[serviceName]) {
       return;
     }
     
@@ -35,9 +35,9 @@ export class ServiceProvider {
   /**
    *
    * @param service
-   * @returns {any}
+   * @returns {}
    */
-  public static get <T extends Service>(service: new (...args: any[]) => T): T {
+  public static get <T extends Service>(service: new (...args: any[]) => T | Function): T {
     let dependency = ServiceProvider.injected[getConstructorName(service)];
     if (dependency) {
       return dependency

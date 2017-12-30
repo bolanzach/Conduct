@@ -1,6 +1,5 @@
 import {Engine} from "../engine";
 import {UtilsService} from "../util/utilsService";
-import {BehaviorAssembler} from '../injection/behaviorAssembler';
 import {RegisterBehavior} from '../injection/metaDecorators';
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 
