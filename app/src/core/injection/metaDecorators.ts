@@ -18,7 +18,7 @@ export function RegisterBehavior (config?: any) {
   };
 }
 
-export function Required (constructor: any, requiredBehavior: string) {
+export function RequiredChild (constructor: any, requiredBehavior: string) {
   BehaviorProvider.addRequiredChildBehavior(getConstructorName(constructor.constructor), requiredBehavior);
 }
 

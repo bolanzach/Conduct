@@ -1,13 +1,13 @@
 import {Behavior} from "./behavior";
 import {Transform} from "../behaviors/transform";
-import {RegisterBehavior, Required} from "../injection/metaDecorators";
+import {RegisterBehavior, RequiredChild} from "../injection/metaDecorators";
 
 @RegisterBehavior()
 export abstract class GameObject extends Behavior {
   
   protected config: any;
   
-  @Required
+  @RequiredChild
   protected transform: Transform;
   
   constructor (config: any) {
