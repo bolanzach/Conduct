@@ -1,5 +1,11 @@
 const express = require('express');
+const http = require('http');
+const path = require('path');
+const socketIO = require('socket.io');
+
+
 const app = express();
+const server = http.Server(app);
 
 
 app.get('/', function (req, res) {

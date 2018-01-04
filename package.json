@@ -4,7 +4,8 @@
   "description": "\"Component\" based Javascript game engine",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
   },
   "devDependencies": {},
   "scripts": {
