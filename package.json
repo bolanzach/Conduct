@@ -1,0 +1,23 @@
+{
+  "name": "game-engine",
+  "version": "1.0.0",
+  "description": "\"Component\" based Javascript game engine",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bolanzach/game-engine.git"
+  },
+  "author": "zach bolan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bolanzach/game-engine/issues"
+  },
+  "homepage": "https://github.com/bolanzach/game-engine#readme"
+}

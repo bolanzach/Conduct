@@ -12,6 +12,10 @@ export class CanvasRender2DService implements RenderService {
     this.ctx = canvas.getContext('2d');
   }
   
+  public getCanvasContext (): CanvasRenderingContext2D {
+    return this.ctx;
+  }
+  
   
   
   
