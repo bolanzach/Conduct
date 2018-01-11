@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "module": "amd",
-    "target": "es5",
+    "target": "es6",
+    "outDir": "./core/network/server",
     "experimentalDecorators": true
   },
   "exclude": [
