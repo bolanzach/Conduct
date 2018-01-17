@@ -27,6 +27,7 @@ export class Engine {
     Engine.metronome.registerToTicks(Engine.onTick);
   
     this.initialized = true;
+    console.log('e');
     callback(scene);
   }
   
@@ -36,6 +37,10 @@ export class Engine {
   
   
   private static setupView (config: EngineConfig) {
+    if (config.isServer()) {
+      return;
+    }
+    
     let canvas = document.getElementById(config.getCanvasId());
     
     if (canvas) {

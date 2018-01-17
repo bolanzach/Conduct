@@ -4,11 +4,13 @@ import {TestBehavior} from "./core/behaviors/testBehavior";
 import {Transform} from "./core/behaviors/transform";
 import {EngineConfig} from "./core/engineConfig";
 
-Engine.Init(new EngineConfig(), function (scene: Scene) {
+let config: EngineConfig = new EngineConfig.Builder('2d').build();
+
+Engine.Init(config, function (scene: Scene) {
   
   
   // let socket = new WebSocket('ws://localhost:5000');
-  // socket.onmessage = function (message) {
+  // socket.onmessage = function (messag e) {
   //   console.log('Connection 1', message.data);
   // };
 });
