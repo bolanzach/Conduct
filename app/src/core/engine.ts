@@ -1,10 +1,9 @@
 import {BehaviorManager} from "./behavior/behaviorManager";
 import {Scene} from "./behaviors/scene";
 import {Metronome} from "./chrono/metronome";
-import {RendererProvider} from "./view/rendererProvider";
 import {EngineConfig} from "./engineConfig";
 import {ServiceProvider} from "./injection/provider/serviceProvider";
-import {RenderService} from "./view/renderService";
+import {CanvasRender2DService} from "./view/canvasRender2DService";
 
 export class Engine {
   
@@ -44,9 +43,7 @@ export class Engine {
     let canvas = document.getElementById(config.getCanvasId());
     
     if (canvas) {
-      let renderProvider: RendererProvider = ServiceProvider.get(RendererProvider);
-      renderProvider.setRenderer(config.getContext());
-      renderProvider.get().setCanvas(config.getCanvasId());
+      ServiceProvider.get(CanvasRender2DService).setCanvas(config.getCanvasId());
     }
   }
   

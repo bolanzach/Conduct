@@ -2,7 +2,9 @@ import {Transform} from "../behaviors/transform";
 import {Behavior} from "../behavior/behavior";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 import {CanvasRender2DService} from "./canvasRender2DService";
+import {RegisterBehavior} from "../injection/metaDecorators";
 
+@RegisterBehavior()
 export class Draw2DBehavior extends Behavior {
   
   private parentTransform: Transform;

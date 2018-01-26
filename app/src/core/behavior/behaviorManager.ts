@@ -14,8 +14,9 @@ export class BehaviorManager {
   constructor () {}
   
   public initScene (): Scene {
-    let newRecord: BehaviorRecord = BehaviorProvider.get('scene');
-    let newAssembler = new BehaviorAssembler(newRecord, null);
+    new Scene(); // have to do something to Scene to have requirejs recognize the module. need a better way to do this
+    let record: BehaviorRecord = BehaviorProvider.get('scene');
+    let newAssembler = new BehaviorAssembler(record, null);
     let sceneBehavior = this.constructBehavior(newAssembler, null);
     return sceneBehavior as Scene;
   }
@@ -26,8 +27,8 @@ export class BehaviorManager {
 
   public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (configuration?: any) => void {
     let newBehaviorName = getConstructorName(attach);
-    let newRecord = BehaviorProvider.get(newBehaviorName);
-    let newAssembler = new BehaviorAssembler(newRecord, to);
+    let behaviorRecord = BehaviorProvider.get(newBehaviorName);
+    let newAssembler = new BehaviorAssembler(behaviorRecord, to);
     let activeAssembler: BehaviorAssembler = this.assemblers[to];
     
     if (!activeAssembler) {

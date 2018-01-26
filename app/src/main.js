@@ -2,9 +2,7 @@ require(
   [
     'core/engine',
     'core/injection/provider/serviceProvider',
-    'core/injection/provider/behaviorProvider',
-    'core/behaviors/scene',
-    'core/behaviors/transform'
+    'core/injection/provider/behaviorProvider'
   ],
   function (idk) {
     console.log('main.js done');

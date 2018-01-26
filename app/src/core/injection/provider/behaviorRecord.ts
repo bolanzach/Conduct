@@ -1,3 +1,7 @@
+/**
+ * Represents a class registered as a Behavior.
+ * This is a record the Behavior's name, constructor, dependencies, etc
+ */
 export class BehaviorRecord {
   
   private _name: string;

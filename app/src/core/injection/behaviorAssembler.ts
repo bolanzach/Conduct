@@ -1,5 +1,9 @@
 import {BehaviorRecord} from "./provider/behaviorRecord";
 
+/**
+ * An internal class that is managed by the BehaviorManager. Every Behavior that has been added to the game, whether
+ * it is currently active or not, is backed by a BehaviorAssembler.
+ */
 export class BehaviorAssembler {
   private _record: BehaviorRecord;
   private _inactiveChildren: any = {};

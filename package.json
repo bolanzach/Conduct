@@ -4,12 +4,10 @@
   "description": "\"Component\" based Javascript game engine",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.16.2",
     "requirejs": "^2.3.5",
-    "socket.io": "^2.0.4"
+    "ws": "^4.0.0"
   },
   "devDependencies": {
-    "@types/express": "^4.11.0",
     "@types/node": "^4.0.35",
     "@types/ws": "^3.2.1"
   },
