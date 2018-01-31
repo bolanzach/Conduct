@@ -4,6 +4,8 @@ import {Metronome} from "./chrono/metronome";
 import {EngineConfig} from "./engineConfig";
 import {ServiceProvider} from "./injection/provider/serviceProvider";
 import {CanvasRender2DService} from "./view/canvasRender2DService";
+import {ClientMetronome} from "./chrono/clientMetronome";
+import {ServerMetronome} from "./chrono/serverMetronome";
 
 export class Engine {
   
@@ -16,7 +18,7 @@ export class Engine {
       return;
     }
   
-    Engine.metronome = new Metronome();
+    Engine.metronome = config.isClient() ? new ClientMetronome() : new ServerMetronome();
     Engine.behaviorManager = new BehaviorManager();
     
     Engine.setupView(config);

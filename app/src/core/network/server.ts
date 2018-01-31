@@ -4,13 +4,13 @@ import {EngineConfig} from "../engineConfig";
 
 const ws = new WebSocket('ws://localhost');
 
-ws.on('open', function open() {
-  ws.send('something');
-});
-
-ws.on('message', function incoming(data) {
-  console.log(data);
-});
+// ws.on('open', function open() {
+//   ws.send('something');
+// });
+//
+// ws.on('message', function incoming(data) {
+//   console.log(data);
+// });
 
 let config: EngineConfig = new EngineConfig.Builder('2d')
   .setNetworkModel('server')
@@ -22,4 +22,5 @@ Engine.Init(config, function () {
   // server.listen(process.env.PORT || 10000, () => {
   //   console.log(`Server started on port ${server.address().port} :)`);
   // });
+  console.log('hi');
 });
