@@ -24,11 +24,10 @@ export class Engine {
     Engine.setupView(config);
     let scene: Scene = (Engine.behaviorManager.initScene());
     
-    Engine.metronome.start(1);
+    Engine.metronome.start(config.getFps());
     Engine.metronome.registerToTicks(Engine.onTick);
   
     this.initialized = true;
-    console.log('e');
     callback(scene);
   }
   

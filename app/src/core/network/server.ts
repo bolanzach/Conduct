@@ -2,7 +2,7 @@ import * as WebSocket from 'ws';
 import {Engine} from "../engine";
 import {EngineConfig} from "../engineConfig";
 
-const ws = new WebSocket('ws://localhost');
+//const ws = new WebSocket('ws://localhost');
 
 // ws.on('open', function open() {
 //   ws.send('something');
@@ -14,13 +14,13 @@ const ws = new WebSocket('ws://localhost');
 
 let config: EngineConfig = new EngineConfig.Builder('2d')
   .setNetworkModel('server')
+  .setFramesPerSecond(1)
   .build();
-
 
 
 Engine.Init(config, function () {
   // server.listen(process.env.PORT || 10000, () => {
   //   console.log(`Server started on port ${server.address().port} :)`);
   // });
-  console.log('hi');
+  console.log('---hi');
 });

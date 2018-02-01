@@ -7,7 +7,6 @@ export class ClientMetronome implements Metronome {
   private lastFrameTimeMs: number;
   private delta: number;
   private timeStep: number;
-  
   private maxFPS: number;
   
   constructor () {

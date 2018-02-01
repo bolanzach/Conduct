@@ -3,6 +3,7 @@ export class EngineConfig {
   private renderContext: string;
   private canvasId: string;
   private networkModel: string;
+  private fps: number;
   
   /**
    * Probably don't wanna call this directly - use the Builder
@@ -12,11 +13,13 @@ export class EngineConfig {
    */
   public constructor (renderContext: string,
                       canvasId: string,
-                      networkModel: string) {
+                      networkModel: string,
+                      fps: number) {
     
     this.renderContext = renderContext;
     this.canvasId = canvasId;
     this.networkModel = networkModel;
+    this.fps = fps;
   }
   
   public getContext (): string {
@@ -29,6 +32,10 @@ export class EngineConfig {
   
   public getNetworkModel (): string {
     return this.networkModel;
+  }
+  
+  public getFps (): number {
+    return this.fps;
   }
   
   public isClient () {
@@ -48,6 +55,7 @@ export class EngineConfig {
     private renderContext: string = '2d';
     private canvasId: string = 'scene';
     private networkModel: string = 'client';
+    private fps: number = 60;
     
     constructor (renderContext: string) {
       this.renderContext = renderContext === '3d' ? renderContext : '2d';
@@ -57,7 +65,8 @@ export class EngineConfig {
       return new EngineConfig(
         this.renderContext,
         this.canvasId,
-        this.networkModel);
+        this.networkModel,
+        this.fps);
     }
     
     public setCanvasId (id: string) {
@@ -67,6 +76,11 @@ export class EngineConfig {
     
     public setNetworkModel (clientOrServer: string) {
       this.networkModel = clientOrServer === 'server' ? clientOrServer : 'client';
+      return this;
+    }
+    
+    public setFramesPerSecond (fps: number) {
+      this.fps = fps;
       return this;
     }
     
