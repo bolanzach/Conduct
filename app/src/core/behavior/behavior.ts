@@ -37,7 +37,7 @@ export abstract class Behavior {
     this.getChildren().forEach((childBehavior) => childBehavior.destroy());
   }
   
-  public addBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): (configuration?: any) => void {
+  public addBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): (props?: any) => void {
     return Engine.Behaviors().attachBehaviorToBehavior(behavior, this.getId());
   }
   

@@ -12,7 +12,7 @@ export class ServerMetronome implements Metronome {
   constructor () {
     this.lastFrameTimeMs = 0;
     this.delta = 0;
-    this.maxFPS = 1;
+    this.maxFPS = 60;
   }
   
   start(fps: number) {
@@ -20,6 +20,7 @@ export class ServerMetronome implements Metronome {
       return;
     }
   
+    fps = (fps > this.maxFPS) ? this.maxFPS : fps;
     this.timeStep = 1000 / fps;
     this.isRunning = true;
     setImmediate(this.mainLoop);
@@ -35,18 +36,14 @@ export class ServerMetronome implements Metronome {
   }
   
   private mainLoop = () => {
-    let timestamp = new Date().getTime();
-    this.delta += timestamp - this.lastFrameTimeMs;
-    this.lastFrameTimeMs = timestamp;
-
-    console.log(this.delta, ' --- ', this.timeStep);
-    while (this.delta >= this.timeStep) {
-      this.tick(this.timeStep);
-      this.delta -= this.timeStep;
+    let now = Date.now();
+    this.delta += now - this.lastFrameTimeMs;
+    
+    if (this.lastFrameTimeMs + this.timeStep < now) {
+      this.lastFrameTimeMs = now;
+      this.tick(this.delta);
     }
-
-    // this.tick(this.delta);
-    // draw() ?
+    
     setImmediate(this.mainLoop);
   };
   

@@ -12,7 +12,7 @@ export class ClientMetronome implements Metronome {
   constructor () {
     this.lastFrameTimeMs = 0;
     this.delta = 0;
-    this.maxFPS = 1;
+    this.maxFPS = 60;
   }
   
   public start (fps: number) {

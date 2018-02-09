@@ -25,7 +25,7 @@ export class BehaviorManager {
     Object.keys(this.behaviorsToUpdate || {}).forEach(behaviorKey => this.behaviorsToUpdate[behaviorKey].update());
   }
 
-  public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (configuration?: any) => void {
+  public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (props?: any) => void {
     let newBehaviorName = getConstructorName(attach);
     let behaviorRecord = BehaviorProvider.get(newBehaviorName);
     let newAssembler = new BehaviorAssembler(behaviorRecord, to);
@@ -50,8 +50,8 @@ export class BehaviorManager {
     
     activeAssembler.inactiveChildren[newBehaviorName] = newAssembler;
     
-    return (configuration?: any) => {
-      activeAssembler.childrenAssemblerConfigs[newBehaviorName] = configuration || {};
+    return (props?: any) => {
+      activeAssembler.childrenAssemblerProps[newBehaviorName] = props || {};
       this.activateAssemblerChildren(activeAssembler);
     };
   }
@@ -194,7 +194,7 @@ export class BehaviorManager {
   /**
    * Checks if the parentAssembler satisfies all the dependencies for the assemblerToCheck.
    * A dependency is satisfied if the parent has all active Behaviors required by the Assembler.
-   * This function ignores the special Config dependency
+   * This function ignores the special Props dependency
    *
    * @param {BehaviorAssembler} assemblerToCheck
    * @param {BehaviorAssembler} parentAssembler
@@ -203,7 +203,7 @@ export class BehaviorManager {
   private canActivate (assemblerToCheck: BehaviorAssembler, parentAssembler: BehaviorAssembler): boolean {
     let dependencies = assemblerToCheck.record.args;
     return dependencies.every((arg) => {
-      return arg === 'CONFIG' || !!parentAssembler.activeChildren[arg];
+      return arg === 'PROPS' || !!parentAssembler.activeChildren[arg];
     });
   }
   
@@ -229,7 +229,7 @@ export class BehaviorManager {
       dependencies = (config.args || []).map(arg => {
         return activeBehaviors[arg] ?
           activeBehaviors[arg].behavior :
-          parentAssembler.childrenAssemblerConfigs[assembler.name];
+          parentAssembler.childrenAssemblerProps[assembler.name];
       });
     }
     

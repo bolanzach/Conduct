@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "amd",
+    "module": "umd",
     "target": "es5",
     "lib": ["es5", "es6", "dom"],
     "experimentalDecorators": true

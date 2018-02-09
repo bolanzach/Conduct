@@ -8,7 +8,7 @@ export class BehaviorAssembler {
   private _record: BehaviorRecord;
   private _inactiveChildren: any = {};
   private _activeChildren: any = {};
-  private _childrenAssemblerConfigs = {};
+  private _childrenAssemblerProps = {};
   private _parent: string;
   private _name: string;
   
@@ -30,8 +30,8 @@ export class BehaviorAssembler {
     return this._activeChildren;
   }
   
-  get childrenAssemblerConfigs(): {} {
-    return this._childrenAssemblerConfigs;
+  get childrenAssemblerProps(): {} {
+    return this._childrenAssemblerProps;
   }
   
   get parent(): string {
