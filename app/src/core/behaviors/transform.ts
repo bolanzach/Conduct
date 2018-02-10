@@ -9,12 +9,12 @@ export class Transform extends Behavior {
   rotation: number;
   scale: number;
   
-  constructor (config: any) {
+  constructor (props: any) {
     super();
-    this.x = config.x || 0;
-    this.y = config.y || 0;
-    this.rotation = config.rotation || 0;
-    this.scale = config.scale || 1;
+    this.x = props.x || 0;
+    this.y = props.y || 0;
+    this.rotation = props.rotation || 0;
+    this.scale = props.scale || 1;
   }
   
   public update() {

@@ -48,7 +48,6 @@ export class ServerMetronome implements Metronome {
   };
   
   private tick (delta: number) {
-    console.log('ticcck');
     (this.listeners || []).forEach((cb) => cb(delta));
   }
   

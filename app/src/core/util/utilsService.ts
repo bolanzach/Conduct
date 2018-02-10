@@ -19,9 +19,9 @@ export class UtilsService implements Service {
    * @param cb {Function} invoked for each property with the key's value and the key itself
    */
   public forEach (obj: Object, cb: Function) {
-    for (let prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        cb(obj[prop], prop);
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        cb(obj[key], key);
       }
     }
   }

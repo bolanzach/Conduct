@@ -4,9 +4,7 @@ import {Metronome} from "./chrono/metronome";
 import {EngineConfig} from "./engineConfig";
 import {ServiceProvider} from "./injection/provider/serviceProvider";
 import {CanvasRender2DService} from "./view/canvasRender2DService";
-import {ClientMetronome} from "./chrono/clientMetronome";
-import {ServerMetronome} from "./chrono/serverMetronome";
-import {MetronomeProvider} from "./chrono/metronomeProvider";
+import {MetronomeService} from "./chrono/metronomeService";
 
 export class Engine {
   
@@ -20,22 +18,20 @@ export class Engine {
       return;
     }
     
-    console.log('sadfasdf');
-  
+    console.log('Engine Init');
+    
     Engine.engineConfig = config;
-    Engine.metronome = config.isClient() ? new ClientMetronome() : new ServerMetronome();
     Engine.behaviorManager = new BehaviorManager();
-    
+  
+    new ServiceProvider().release();
     Engine.setupView(config);
-    let scene: Scene = (Engine.behaviorManager.initScene());
     
-    let a: Metronome = ServiceProvider.get(MetronomeProvider);
-    a.registerToTicks(null);
-    
+    Engine.metronome = ServiceProvider.get(MetronomeService);
     Engine.metronome.start(config.getFps());
     Engine.metronome.registerToTicks(Engine.onTick);
   
-    this.initialized = true;
+    Engine.initialized = true;
+    let scene: Scene = (Engine.behaviorManager.initScene());
     callback(scene);
   }
   

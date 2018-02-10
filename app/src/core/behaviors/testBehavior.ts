@@ -6,9 +6,9 @@ export class TestBehavior extends GameObject {
   
   private name: string;
   
-  constructor (config: any) {
-    super(config);
-    this.config = config;
+  constructor (props: any) {
+    super(props);
+    this.props = props;
   }
   
   update () {
