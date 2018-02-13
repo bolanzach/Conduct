@@ -3,7 +3,8 @@
     "module": "umd",
     "target": "es5",
     "lib": ["es5", "es6", "dom"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "sourceMap": true
   },
   "exclude": [
     "node_modules"

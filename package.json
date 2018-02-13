@@ -4,14 +4,16 @@
   "description": "\"Component\" based Javascript game engine",
   "main": "index.js",
   "dependencies": {
-    "requirejs": "^2.3.5",
     "ws": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^4.0.35",
-    "@types/ws": "^3.2.1"
+    "@types/ws": "^3.2.1",
+    "ts-loader": "^3.5.0",
+    "webpack": "^3.11.0"
   },
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

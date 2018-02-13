@@ -1,5 +1,7 @@
 import {Metronome} from "./metronome";
+import {RegisterService} from "../injection/metaDecorators";
 
+@RegisterService()
 export class ServerMetronome implements Metronome {
   
   private isRunning: boolean = false;

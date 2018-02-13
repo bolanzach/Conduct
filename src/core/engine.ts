@@ -23,9 +23,12 @@ export class Engine {
     Engine.engineConfig = config;
     Engine.behaviorManager = new BehaviorManager();
   
+    // Release injected services so they can be constructed
     new ServiceProvider().release();
+    
     Engine.setupView(config);
     
+    // Start up the Metronome
     Engine.metronome = ServiceProvider.get(MetronomeService);
     Engine.metronome.start(config.getFps());
     Engine.metronome.registerToTicks(Engine.onTick);
@@ -43,7 +46,10 @@ export class Engine {
     return Engine.behaviorManager;
   }
   
-  
+  /**
+   * Setup the Renderer if this is a Client
+   * @param {EngineConfig} config
+   */
   private static setupView (config: EngineConfig) {
     if (config.isServer()) {
       return;
