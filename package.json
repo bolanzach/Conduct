@@ -13,7 +13,7 @@
     "webpack": "^3.11.0"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "tsc -p tsconfig.json; webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,5 +25,6 @@
   "bugs": {
     "url": "https://github.com/bolanzach/game-engine/issues"
   },
-  "homepage": "https://github.com/bolanzach/game-engine#readme"
+  "homepage": "https://github.com/bolanzach/game-engine#readme",
+  "optionalDependencies": {}
 }

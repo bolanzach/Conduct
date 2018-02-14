@@ -13,7 +13,7 @@ Engine.Init(config, function (scene: Scene) {
   
   console.log('GOT: ', test);
   
-  test.addBehavior(NetworkBehavior)( ['test']);
+  test.addBehavior(NetworkBehavior)(['test']);
   
   
 
