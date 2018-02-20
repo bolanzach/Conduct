@@ -10,6 +10,7 @@
     "@types/node": "^4.0.35",
     "@types/ws": "^3.2.1",
     "ts-loader": "^3.5.0",
+    "typescript": "^2.7.2",
     "webpack": "^3.11.0"
   },
   "scripts": {

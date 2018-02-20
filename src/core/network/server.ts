@@ -10,13 +10,13 @@ let config: EngineConfig = new EngineConfig.Builder('2d')
 
 Engine.Init(config, function () {
   const server: WebSocket.Server = new WebSocket.Server({ port: 8080 });
-  
+
   server.on('connection', function connection (ws) {
     ws.on('message', function incoming(message) {
       console.log('received: %s', message);
     });
-    
+
     ws.send('connected!');
   });
-  
+
 });

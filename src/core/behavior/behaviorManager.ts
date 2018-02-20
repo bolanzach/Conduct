@@ -202,7 +202,7 @@ export class BehaviorManager {
    */
   private canActivate (assemblerToCheck: BehaviorAssembler, parentAssembler: BehaviorAssembler): boolean {
     let dependencies = assemblerToCheck.record.args;
-    return dependencies.every((arg) => {
+    return dependencies.every(arg => {
       return arg === 'PROPS' || !!parentAssembler.activeChildren[arg];
     });
   }
