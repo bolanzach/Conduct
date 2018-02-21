@@ -1,22 +1,21 @@
 import {RegisterService} from "../injection/metaDecorators";
 import {NetworkBehavior} from "./networkBehavior";
 import {Engine} from "../engine";
-import * as WebSocket from "ws";
 
 @RegisterService()
 export class NetworkService {
 
-  private socket: WebSocket;
-
+  private socket;
 
   constructor () {
     console.log(Engine);
-    this.socket = new WebSocket('ws://localhost');
+    this.socket = new WebSocket('ws://localhost:8080');
   }
 
   public register (networkBehavior: NetworkBehavior) {
-    console.log(this.socket);
-    this.socket.send('just send itttt');
+    this.socket.onopen = () => {
+      this.socket.send('just send itttt');
+    };
   }
 
   public deregister (networkBehavior: NetworkBehavior) {

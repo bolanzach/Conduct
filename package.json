@@ -4,6 +4,8 @@
   "description": "\"Component\" based Javascript game engine",
   "main": "index.js",
   "dependencies": {
+    "bufferutil": "^3.0.3",
+    "utf-8-validate": "^4.0.0",
     "ws": "^4.0.0"
   },
   "devDependencies": {
@@ -15,7 +17,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json; webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-watch": "tsc -p tsconfig.json; webpack -w",
+    "run-server": "node dist/core/network/server.js"
   },
   "repository": {
     "type": "git",
