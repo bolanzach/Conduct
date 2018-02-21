@@ -11,10 +11,6 @@ export class TestBehavior extends GameObject {
     this.props = props;
   }
   
-  update () {
-  
-  }
-  
   onAwake () {
   
   }

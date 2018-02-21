@@ -1,14 +1,11 @@
 import {Behavior} from "./behavior";
 import {Transform} from "../behaviors/transform";
-import {RegisterBehavior, RequiredChild} from "../injection/metaDecorators";
+import {RegisterBehavior} from "../injection/metaDecorators";
 
 @RegisterBehavior()
 export abstract class GameObject extends Behavior {
   
   protected props: any;
-  
-  @RequiredChild
-  protected transform: Transform;
   
   constructor (props: any) {
     super();
@@ -17,7 +14,10 @@ export abstract class GameObject extends Behavior {
   
   onAwake () {
     this.addBehavior(Transform)(this.props);
-    this.transform = this.getBehavior(Transform);
+  }
+  
+  getTransform (): Transform {
+    return this.getBehavior(Transform) as Transform;
   }
 
 }

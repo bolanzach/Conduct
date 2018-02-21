@@ -22,7 +22,7 @@ export class BehaviorManager {
   }
   
   public update () {
-    Object.keys(this.behaviorsToUpdate || {}).forEach(behaviorKey => this.behaviorsToUpdate[behaviorKey].update());
+    //
   }
 
   public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (props?: any) => void {
