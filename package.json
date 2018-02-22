@@ -1,6 +1,6 @@
 {
-  "name": "game-engine",
-  "version": "1.0.0",
+  "name": "conduct-engine",
+  "version": "0.0.1",
   "description": "\"Component\" based Javascript game engine",
   "main": "index.js",
   "dependencies": {
@@ -30,5 +30,8 @@
     "url": "https://github.com/bolanzach/game-engine/issues"
   },
   "homepage": "https://github.com/bolanzach/game-engine#readme",
-  "optionalDependencies": {}
+  "optionalDependencies": {},
+  "browser": {
+
+  }
 }
