@@ -20,7 +20,7 @@ const webpack = require('webpack');
 // };
 
 var serverConfig = {
-  entry: ['./src/core/engine.ts', './src/game.ts'],
+  entry: ['./src/core/network/server.ts'],
   output: {
     filename: 'bundle.node.js',
     path: path.resolve(__dirname, 'dist')

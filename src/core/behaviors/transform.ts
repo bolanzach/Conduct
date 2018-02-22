@@ -17,9 +17,4 @@ export class Transform extends Behavior {
     this.scale = props.scale || 1;
   }
   
-  public update() {
-    //
-  }
-  
-  
 }

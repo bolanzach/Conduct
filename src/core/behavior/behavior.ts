@@ -9,7 +9,7 @@ export abstract class Behavior {
   private id: string;
   private active: boolean = false;
   
-  private utilsService: UtilsService = ServiceProvider.get(UtilsService);
+  protected utilsService: UtilsService = ServiceProvider.get(UtilsService);
   
   constructor () {
     let result = /^function\s+([\w\$]+)\s*\(/.exec(this.constructor.toString());
@@ -18,7 +18,7 @@ export abstract class Behavior {
     this.active = true;
   }
   
-  public abstract onAwake ();
+  public onAwake () {}
   
   public activate () {
     this.active = true;
