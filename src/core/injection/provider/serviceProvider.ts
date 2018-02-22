@@ -1,6 +1,6 @@
 import {getConstructorName} from "../metaDecorators";
 import {Service} from "../../service/service";
-import {Engine} from "../../engine";
+import {Conduct} from "../../conductEngine";
 
 export class ServiceProvider {
   
@@ -48,11 +48,11 @@ export class ServiceProvider {
   }
   
   /**
-   * This isn't great but should work for now. Services get registered and constructed before the Engine
-   * starts up, causing all sorts of bugs. This holds the services until the Engine releases them
+   * This isn't great but should work for now. Services get registered and constructed before the Conduct
+   * starts up, causing all sorts of bugs. This holds the services until the Conduct releases them
    */
   public release () {
-    if (!Engine) {
+    if (!Conduct) {
       return;
     }
     
@@ -67,7 +67,7 @@ export class ServiceProvider {
   }
   
   private doInject (clazz, args, name) {
-    if (!Engine) {
+    if (!Conduct) {
       ServiceProvider.holding.push({ clazz: clazz, args: args, name: name });
       return;
     }

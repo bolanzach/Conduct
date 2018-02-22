@@ -1,56 +1,56 @@
 import {BehaviorManager} from "./behavior/behaviorManager";
 import {Scene} from "./behaviors/scene";
 import {Metronome} from "./chrono/metronome";
-import {EngineConfig} from "./engineConfig";
+import {ConductConfig} from "./conductConfig";
 import {ServiceProvider} from "./injection/provider/serviceProvider";
 import {CanvasRender2DService} from "./view/canvasRender2DService";
 import {MetronomeService} from "./chrono/metronomeService";
 
-export class Engine {
+export class Conduct {
   
   private static initialized: boolean = false;
   private static behaviorManager: BehaviorManager;
   private static metronome: Metronome;
-  private static engineConfig: EngineConfig;
+  private static engineConfig: ConductConfig;
   
-  public static Init (config: EngineConfig, callback: Function) {
+  public static Init (config: ConductConfig, callback: Function) {
     if (this.initialized) {
       return;
     }
     
-    console.log('Engine Init');
+    console.log('Conduct Init');
     
-    Engine.engineConfig = config;
-    Engine.behaviorManager = new BehaviorManager();
+    Conduct.engineConfig = config;
+    Conduct.behaviorManager = new BehaviorManager();
   
     // Release injected services so they can be constructed
     new ServiceProvider().release();
     
-    Engine.setupView(config);
+    Conduct.setupView(config);
     
     // Start up the Metronome
-    Engine.metronome = ServiceProvider.get(MetronomeService);
-    Engine.metronome.start(config.getFps());
-    Engine.metronome.registerToTicks(Engine.onTick);
+    Conduct.metronome = ServiceProvider.get(MetronomeService);
+    Conduct.metronome.start(config.getFps());
+    Conduct.metronome.registerToTicks(Conduct.onTick);
   
-    Engine.initialized = true;
-    let scene: Scene = (Engine.behaviorManager.initScene());
+    Conduct.initialized = true;
+    let scene: Scene = (Conduct.behaviorManager.initScene());
     callback(scene);
   }
   
-  public static config (): EngineConfig {
-    return Engine.engineConfig;
+  public static config (): ConductConfig {
+    return Conduct.engineConfig;
   }
   
   public static Behaviors (): BehaviorManager {
-    return Engine.behaviorManager;
+    return Conduct.behaviorManager;
   }
   
   /**
    * Setup the Renderer if this is a Client
-   * @param {EngineConfig} config
+   * @param {ConductConfig} config
    */
-  private static setupView (config: EngineConfig) {
+  private static setupView (config: ConductConfig) {
     if (config.isServer()) {
       return;
     }
@@ -63,7 +63,7 @@ export class Engine {
   }
   
   private static onTick (delta) {
-    Engine.behaviorManager.update();
+    Conduct.behaviorManager.update();
   }
   
 }

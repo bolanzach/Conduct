@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 // module.exports = {
-//   entry: ['./src/core/engine.ts', './src/game.ts'],
+//   entry: ['./src/core/conductEngine.ts', './src/game.ts'],
 //   output: {
 //     filename: 'bundle.js',
 //     path: path.resolve(__dirname, 'dist')
@@ -38,7 +38,7 @@ var serverConfig = {
 };
 
 var clientConfig = {
-  entry: ['./src/core/engine.ts', './src/game.ts'],
+  entry: ['./src/core/conductEngine.ts', './src/game.ts'],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')

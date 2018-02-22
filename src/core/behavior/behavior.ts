@@ -1,4 +1,4 @@
-import {Engine} from "../engine";
+import {Conduct} from "../conductEngine";
 import {UtilsService} from "../util/utilsService";
 import {RegisterBehavior} from '../injection/metaDecorators';
 import {ServiceProvider} from "../injection/provider/serviceProvider";
@@ -26,25 +26,25 @@ export abstract class Behavior {
   
   public deactivate () {
     this.active = false;
-    Engine.Behaviors().deactivate(this.getId());
+    Conduct.Behaviors().deactivate(this.getId());
     this.getChildren().forEach((childBehavior) => childBehavior.deactivate());
   }
   
   public destroy () {
-    Engine.Behaviors().destroy(this.getId());
+    Conduct.Behaviors().destroy(this.getId());
     this.getChildren().forEach((childBehavior) => childBehavior.destroy());
   }
   
   public addBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): (props?: any) => void {
-    return Engine.Behaviors().attachBehaviorToBehavior(behavior, this.getId());
+    return Conduct.Behaviors().attachBehaviorToBehavior(behavior, this.getId());
   }
   
   public getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): T {
-    return Engine.Behaviors().getBehavior(behavior, this.getId());
+    return Conduct.Behaviors().getBehavior(behavior, this.getId());
   }
   
   public getChildren (): Array<Behavior> {
-    return Engine.Behaviors().getChildren(this.getId());
+    return Conduct.Behaviors().getChildren(this.getId());
   }
   
   public isActive (): boolean {
@@ -56,7 +56,7 @@ export abstract class Behavior {
   }
   
   public getParent (): Behavior {
-    return Engine.Behaviors().getParent(this.getId());
+    return Conduct.Behaviors().getParent(this.getId());
   }
   
 }

@@ -1,6 +1,6 @@
 require(
   [
-    'core/engine',
+    'core/conductEngine',
     'core/injection/provider/serviceProvider',
     'core/injection/provider/behaviorProvider'
   ],

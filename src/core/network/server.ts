@@ -1,14 +1,14 @@
 import * as WebSocket from 'ws';
-import {Engine} from "../engine";
-import {EngineConfig} from "../engineConfig";
+import {Conduct} from "../conductEngine";
+import {ConductConfig} from "../conductConfig";
 
 
-let config: EngineConfig = new EngineConfig.Builder('2d')
+let config: ConductConfig = new ConductConfig.Builder('2d')
   .setNetworkModel('server')
   .setFramesPerSecond(1)
   .build();
 
-Engine.Init(config, function () {
+Conduct.Init(config, function () {
   const server: WebSocket.Server = new WebSocket.Server({ port: 8080 });
 
   server.on('connection', function connection (ws) {

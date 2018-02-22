@@ -1,4 +1,4 @@
-export class EngineConfig {
+export class ConductConfig {
   
   private renderContext: string;
   private canvasId: string;
@@ -61,8 +61,8 @@ export class EngineConfig {
       this.renderContext = renderContext === '3d' ? renderContext : '2d';
     }
     
-    public build (): EngineConfig {
-      return new EngineConfig(
+    public build (): ConductConfig {
+      return new ConductConfig(
         this.renderContext,
         this.canvasId,
         this.networkModel,

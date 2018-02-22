@@ -1,6 +1,6 @@
 import {RegisterService} from "../injection/metaDecorators";
 import {Metronome} from "./metronome";
-import {Engine} from "../engine";
+import {Conduct} from "../conductEngine";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 import {ClientMetronome} from "./clientMetronome";
 import {ServerMetronome} from "./serverMetronome";
@@ -14,7 +14,7 @@ export class MetronomeService implements Metronome {
   private metronome: Metronome;
   
   constructor () {
-    let service: any = Engine.config().isClient() ? ClientMetronome : ServerMetronome;
+    let service: any = Conduct.config().isClient() ? ClientMetronome : ServerMetronome;
     this.metronome = ServiceProvider.get(service);
   }
   

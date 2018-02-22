@@ -1,14 +1,28 @@
-# game-engine
+# Conduct Engine
 
-#### What is Engine?
+#### What is Conduct?
 
-Engine is a component based javascript framework for creating games.
-It provides a structure for building both single player and rich multiplayer
+Conduct is a component based javascript framework for developing browser based games.
+It provides a structure for creating both single player and rich multiplayer
 experiences using common web-based technologies. 
 
 #### Getting Started
 
-...coming soon
+To install the current version:
+```
+npm install conduct-engine
+```
+Create a new `game.ts ` for the entry point of your game and start the engine
+```
+import {Conduct} from "./core/conductEngine";
+import {ConductConfig} from "./core/conductConfig";
+import {Scene} from "./core/behaviors/scene";
+
+let config: ConductConfig = new EngineConfig.Builder('2d').build();
+Conduct.Init(config, function (scene: Scene) {
+  // Engine started! Your game code goes here
+});
+```
 
 #### "White Paper"
 

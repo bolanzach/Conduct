@@ -1,6 +1,6 @@
 import {RegisterService} from "../injection/metaDecorators";
 import {NetworkBehavior} from "./networkBehavior";
-import {Engine} from "../engine";
+import {Conduct} from "../conductEngine";
 
 @RegisterService()
 export class NetworkService {
@@ -8,7 +8,7 @@ export class NetworkService {
   private socket;
 
   constructor () {
-    console.log(Engine);
+    console.log(Conduct);
     this.socket = new WebSocket('ws://localhost:8080');
   }
 
