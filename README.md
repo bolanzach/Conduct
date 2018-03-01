@@ -18,7 +18,7 @@ import {Conduct} from "./core/conductEngine";
 import {ConductConfig} from "./core/conductConfig";
 import {Scene} from "./core/behaviors/scene";
 
-let config: ConductConfig = new EngineConfig.Builder('2d').build();
+let config: ConductConfig = new ConductConfig.Builder('2d').build();
 Conduct.Init(config, function (scene: Scene) {
   // Engine started! Your game code goes here
 });
