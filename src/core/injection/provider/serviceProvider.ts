@@ -67,7 +67,7 @@ export class ServiceProvider {
   }
   
   private doInject (clazz, args, name) {
-    if (!Conduct) {
+    if (!Conduct || !Conduct.isInitialized()) {
       ServiceProvider.holding.push({ clazz: clazz, args: args, name: name });
       return;
     }

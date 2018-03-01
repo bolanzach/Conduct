@@ -1,5 +1,6 @@
 import {ServiceProvider} from "./provider/serviceProvider";
 import {BehaviorProvider} from "./provider/behaviorProvider";
+import {EventProvider} from "./provider/eventProvider";
 
 let STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 let ARGUMENT_NAMES = /([^\s,]+)/g;
@@ -15,6 +16,12 @@ export function RegisterBehavior (config?: any) {
   return function (constructor: Function) {
     let behaviorName: string = getConstructorName(constructor);
     BehaviorProvider.inject(behaviorName, getConstructorArgs(constructor), constructor);
+  };
+}
+
+export function RegisterEvent (priority?: number) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    EventProvider.registerEvent(getConstructorName(target.constructor), propertyKey, priority);
   };
 }
 

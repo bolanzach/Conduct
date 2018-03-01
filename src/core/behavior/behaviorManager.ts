@@ -4,14 +4,20 @@ import {BehaviorProvider} from "../injection/provider/behaviorProvider";
 import {getConstructorName} from "../injection/metaDecorators";
 import {Scene} from "../behaviors/scene";
 import {BehaviorRecord} from "../injection/provider/behaviorRecord";
+import {EventProvider} from "../injection/provider/eventProvider";
+import {EventService} from "../event/eventService";
+import {ServiceProvider} from "../injection/provider/serviceProvider";
+import {ConductEvent} from "../event/conductEvent";
 
 export class BehaviorManager {
 
   private behaviorsToUpdate: any = {};
   private assemblers: any = {};
-  private idk: any = {};
+  private updateEvent: ConductEvent;
   
-  constructor () {}
+  constructor () {
+    this.updateEvent = new ConductEvent('update');
+  }
   
   public initScene (): Scene {
     new Scene(); // have to do something to Scene to have requirejs recognize the module. need a better way to do this
@@ -22,7 +28,7 @@ export class BehaviorManager {
   }
   
   public update () {
-    //
+    this.updateEvent.send();
   }
 
   public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (props?: any) => void {
@@ -223,6 +229,7 @@ export class BehaviorManager {
     let id: string;
     let dependencies = [];
     let config = assembler.record;
+    let eventService: EventService = ServiceProvider.get(EventService);
     
     if (parentAssembler) {
       let activeBehaviors = parentAssembler.activeChildren;
@@ -238,6 +245,10 @@ export class BehaviorManager {
     
     this.behaviorsToUpdate[id] = behavior;
     this.assemblers[id] = assembler;
+    
+    EventProvider.getRegisteredEvents(assembler.name).forEach(providedEvent => {
+      eventService.registerEvent(providedEvent.event, behavior, providedEvent.priority);
+    });
     
     behavior.onAwake();
     return behavior;

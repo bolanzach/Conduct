@@ -1,10 +1,9 @@
-import {RegisterBehavior} from "../injection/metaDecorators";
+import {RegisterBehavior, RegisterEvent} from "../injection/metaDecorators";
 import {GameObject} from "../behavior/gameObject";
 
 @RegisterBehavior()
 export class TestBehavior extends GameObject {
   
-  private name: string;
   
   constructor (props: any) {
     super(props);
@@ -13,5 +12,10 @@ export class TestBehavior extends GameObject {
   
   onAwake () {
   
+  }
+  
+  @RegisterEvent()
+  update () {
+    console.log('test');
   }
 }

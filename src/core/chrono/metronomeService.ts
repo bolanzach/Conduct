@@ -14,8 +14,8 @@ export class MetronomeService implements Metronome {
   private metronome: Metronome;
   
   constructor () {
-    let service: any = Conduct.config().isClient() ? ClientMetronome : ServerMetronome;
-    this.metronome = ServiceProvider.get(service);
+    let clazz: any = Conduct.config().isClient() ? ClientMetronome : ServerMetronome;
+    this.metronome = ServiceProvider.get(clazz);
   }
   
   start(fps: number) {

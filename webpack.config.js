@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const fs = require('fs');
 
 // module.exports = {
 //   entry: ['./src/core/conductEngine.ts', './src/game.ts'],
@@ -18,6 +19,14 @@ const webpack = require('webpack');
 //     ]
 //   }
 // };
+var nodeModules = {};
+fs.readdirSync('node_modules')
+  .filter(function(x) {
+    return ['.bin'].indexOf(x) === -1;
+  })
+  .forEach(function(mod) {
+    nodeModules[mod] = 'commonjs ' + mod;
+  });
 
 var serverConfig = {
   entry: ['./src/core/network/server.ts'],
@@ -32,9 +41,13 @@ var serverConfig = {
   target: 'node',
   module: {
     loaders: [
-      { test: /\.tsx?$/, loader: "ts-loader" }
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        exclude: path.resolve(__dirname, './src/client') }
     ]
-  }
+  },
+  externals: nodeModules
 };
 
 var clientConfig = {
@@ -50,9 +63,17 @@ var clientConfig = {
   target: 'web',
   module: {
     loaders: [
-      { test: /\.tsx?$/, loader: "ts-loader" }
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        exclude: path.resolve(__dirname, './src/server')
+      }
     ]
+  },
+  node: {
+    fs: 'empty'
   }
 };
 
-module.exports = [serverConfig, clientConfig];
+// module.exports = [serverConfig, clientConfig];
+module.exports = [clientConfig];

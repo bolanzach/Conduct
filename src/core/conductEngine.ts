@@ -24,6 +24,7 @@ export class Conduct {
     Conduct.behaviorManager = new BehaviorManager();
   
     // Release injected services so they can be constructed
+    Conduct.initialized = true;
     new ServiceProvider().release();
     
     Conduct.setupView(config);
@@ -32,10 +33,13 @@ export class Conduct {
     Conduct.metronome = ServiceProvider.get(MetronomeService);
     Conduct.metronome.start(config.getFps());
     Conduct.metronome.registerToTicks(Conduct.onTick);
-  
-    Conduct.initialized = true;
+    
     let scene: Scene = (Conduct.behaviorManager.initScene());
     callback(scene);
+  }
+  
+  public static isInitialized (): boolean {
+    return Conduct.initialized;
   }
   
   public static config (): ConductConfig {

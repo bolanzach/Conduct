@@ -1,28 +1,31 @@
 import {RegisterService} from "../injection/metaDecorators";
 import {NetworkBehavior} from "./networkBehavior";
 import {Conduct} from "../conductEngine";
+import {Network} from "./network";
+import {ClientNetworkService} from "../../client/network/clientNetworkService";
+import {ServerNetworkService} from "../../server/network/serverNetworkService";
+import {ServiceProvider} from "../injection/provider/serviceProvider";
 
 @RegisterService()
-export class NetworkService {
+export class NetworkService implements Network {
 
-  private socket;
+  private service: Network;
 
   constructor () {
-    console.log(Conduct);
-    this.socket = new WebSocket('ws://localhost:8080');
+    let clazz: any = Conduct.config().isClient() ? ClientNetworkService : ServerNetworkService;
+    this.service = ServiceProvider.get(clazz);
   }
 
   public register (networkBehavior: NetworkBehavior) {
-    this.socket.onopen = () => {
-      this.socket.send('just send itttt');
-    };
+    this.service.register(networkBehavior);
   }
 
   public deregister (networkBehavior: NetworkBehavior) {
-
+    this.service.deregister(networkBehavior);
+  }
+  
+  public emit (message: string, data: any) {
+    this.service.emit(message, data);
   }
 
-  private connect () {
-
-  }
 }
