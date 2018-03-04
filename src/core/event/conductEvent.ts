@@ -4,7 +4,7 @@ import {EventService} from "./eventService";
 export class ConductEvent {
   
   private static eventService: EventService;
-  private _eventName;
+  private _eventName: string;
   
   constructor (eventName: string) {
     ConductEvent.eventService = ServiceProvider.get(EventService);
@@ -16,6 +16,8 @@ export class ConductEvent {
   }
   
   send (): void {
-    ConductEvent.eventService.sendEvent(this);
+    if (this.eventName.length > 0 ) {
+      ConductEvent.eventService.sendEvent(this);
+    }
   }
 }

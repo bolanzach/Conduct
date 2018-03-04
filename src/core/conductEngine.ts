@@ -21,11 +21,11 @@ export class Conduct {
     console.log('Conduct Init');
     
     Conduct.engineConfig = config;
-    Conduct.behaviorManager = new BehaviorManager();
   
     // Release injected services so they can be constructed
     Conduct.initialized = true;
     new ServiceProvider().release();
+    Conduct.behaviorManager = new BehaviorManager();
     
     Conduct.setupView(config);
     

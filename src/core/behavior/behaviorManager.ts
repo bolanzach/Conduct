@@ -8,6 +8,7 @@ import {EventProvider} from "../injection/provider/eventProvider";
 import {EventService} from "../event/eventService";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 import {ConductEvent} from "../event/conductEvent";
+import {UpdateEvent} from "../event/updateEvent";
 
 export class BehaviorManager {
 
@@ -16,7 +17,7 @@ export class BehaviorManager {
   private updateEvent: ConductEvent;
   
   constructor () {
-    this.updateEvent = new ConductEvent('update');
+    this.updateEvent = new UpdateEvent();
   }
   
   public initScene (): Scene {
