@@ -65,8 +65,7 @@ var clientConfig = {
     loaders: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        exclude: path.resolve(__dirname, './src/server')
+        loader: "ts-loader"
       }
     ]
   },
@@ -75,5 +74,5 @@ var clientConfig = {
   }
 };
 
-// module.exports = [serverConfig, clientConfig];
-module.exports = [clientConfig];
+module.exports = [serverConfig, clientConfig];
+// module.exports = [clientConfig];

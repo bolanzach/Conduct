@@ -1,6 +1,5 @@
 import {Conduct} from "./core/conductEngine";
 import {Scene} from "./core/behaviors/scene";
-import {TestBehavior} from "./core/behaviors/testBehavior";
 import {ConductConfig} from "./core/conductConfig";
 import {NetworkBehavior} from "./core/network/networkBehavior";
 import {ParentTestBehavior} from "./core/behaviors/parentTestBehavior";
@@ -10,9 +9,9 @@ let config: ConductConfig = new ConductConfig.Builder('2d').setFramesPerSecond(1
 Conduct.Init(config, function (scene: Scene) {
   
   scene.addBehavior(ParentTestBehavior)({ test: 'zach' });
-  // let test: TestBehavior = scene.getBehavior(TestBehavior);
-  //
-  // test.addBehavior(NetworkBehavior)({});
+  let test: ParentTestBehavior = scene.getBehavior(ParentTestBehavior);
+
+  test.addBehavior(NetworkBehavior)({});
   
   
 
