@@ -2,7 +2,7 @@ export class ConductConfig {
   
   private renderContext: string;
   private canvasId: string;
-  private networkModel: string;
+  private networkEnv: string;
   private fps: number;
   
   /**
@@ -18,7 +18,7 @@ export class ConductConfig {
     
     this.renderContext = renderContext;
     this.canvasId = canvasId;
-    this.networkModel = networkModel;
+    this.networkEnv = networkModel;
     this.fps = fps;
   }
   
@@ -30,8 +30,8 @@ export class ConductConfig {
     return this.canvasId;
   }
   
-  public getNetworkModel (): string {
-    return this.networkModel;
+  public getNetworkEnv (): string {
+    return this.networkEnv;
   }
   
   public getFps (): number {
@@ -39,11 +39,11 @@ export class ConductConfig {
   }
   
   public isClient () {
-    return this.networkModel === 'client';
+    return this.networkEnv === 'client';
   }
   
   public isServer () {
-    return this.networkModel === 'server';
+    return this.networkEnv === 'server';
   }
   
   
@@ -54,7 +54,7 @@ export class ConductConfig {
   public static Builder = class {
     private renderContext: string = '2d';
     private canvasId: string = 'scene';
-    private networkModel: string = 'client';
+    private networkEnv: string = 'client';
     private fps: number = 60;
     
     constructor (renderContext: string) {
@@ -65,7 +65,7 @@ export class ConductConfig {
       return new ConductConfig(
         this.renderContext,
         this.canvasId,
-        this.networkModel,
+        this.networkEnv,
         this.fps);
     }
     
@@ -74,8 +74,8 @@ export class ConductConfig {
       return this;
     }
     
-    public setNetworkModel (clientOrServer: string) {
-      this.networkModel = clientOrServer === 'server' ? clientOrServer : 'client';
+    public setNetworkEnv (clientOrServer: string) {
+      this.networkEnv = clientOrServer === 'server' ? clientOrServer : 'client';
       return this;
     }
     

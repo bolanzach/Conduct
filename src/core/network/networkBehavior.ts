@@ -6,13 +6,26 @@ import {ServiceProvider} from "../injection/provider/serviceProvider";
 @RegisterBehavior()
 export class NetworkBehavior extends Behavior {
 
+  private properties: Array<string>;
+  private static networkService: NetworkService;
+  
   constructor (props: any) {
     super();
+    NetworkBehavior.networkService = ServiceProvider.get(NetworkService);
+    this.properties = props.properties || [];
     this.registerToNetwork();
   }
 
   private registerToNetwork () {
-    ServiceProvider.get(NetworkService).register(this);
+    NetworkBehavior.networkService.register(this);
+  }
+  
+  @RegisterEvent()
+  update () {
+    (this.properties || []).forEach(prop => {
+      let value = this.getParent()[prop].toString();
+      NetworkBehavior.networkService.emitProperty(this.getId(), prop, value);
+    });
   }
 
 }

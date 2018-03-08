@@ -5,10 +5,16 @@ import {Network} from "../../core/network/network";
 export class ServerNetworkService implements Network {
 
   private server: WebSocket.Server = new WebSocket.Server({ port: 8080 });
-
-
+  
   constructor () {
-    this.server.on('connection', this.onConnect);
+    this.server.on('connection', function connection (ws) {
+      ws.on('message', function incoming(message) {
+        console.log('received: %s', message);
+      });
+    
+      ws.send('connected!');
+      console.log('connected');
+    });
   }
 
   public register (networkBehavior: NetworkBehavior) {
@@ -22,12 +28,16 @@ export class ServerNetworkService implements Network {
   public emit (message: string, data: any) {
 
   }
-
-  private onConnect (ws) {
-    ws.on('message', function incoming (message) {
-      console.log('received: %s', message);
-    });
-
-    ws.send('connected!');
+  
+  public emitProperty (networkId: string, prop: string, value: string) {
+  
   }
+  //
+  // private onConnect (ws) {
+  //   ws.on('message', function incoming (message) {
+  //     console.log('received: %s', message);
+  //   });
+  //
+  //   ws.send('connected!');
+  // }
 }

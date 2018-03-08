@@ -29,5 +29,9 @@ export class NetworkService implements Network {
   public emit (message: string, data: any) {
     this.service.emit(message, data);
   }
+  
+  public emitProperty (networkId: string, prop: string, value: string) {
+    this.service.emitProperty(networkId, prop, value);
+  }
 
 }

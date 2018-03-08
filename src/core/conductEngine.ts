@@ -5,6 +5,7 @@ import {ConductConfig} from "./conductConfig";
 import {ServiceProvider} from "./injection/provider/serviceProvider";
 import {CanvasRender2DService} from "./view/canvasRender2DService";
 import {MetronomeService} from "./chrono/metronomeService";
+import {UpdateEvent} from "./event/updateEvent";
 
 export class Conduct {
   
@@ -67,7 +68,7 @@ export class Conduct {
   }
   
   private static onTick (delta) {
-    Conduct.behaviorManager.update();
+    new UpdateEvent(delta).send();
   }
   
 }

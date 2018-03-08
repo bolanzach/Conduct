@@ -14,11 +14,6 @@ export class BehaviorManager {
 
   private behaviorsToUpdate: any = {};
   private assemblers: any = {};
-  private updateEvent: ConductEvent;
-  
-  constructor () {
-    this.updateEvent = new UpdateEvent();
-  }
   
   public initScene (): Scene {
     new Scene(); // have to do something to Scene to have requirejs recognize the module. need a better way to do this
@@ -28,10 +23,6 @@ export class BehaviorManager {
     return sceneBehavior as Scene;
   }
   
-  public update () {
-    this.updateEvent.send();
-  }
-
   public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (props?: any) => void {
     let newBehaviorName = getConstructorName(attach);
     let behaviorRecord = BehaviorProvider.get(newBehaviorName);
