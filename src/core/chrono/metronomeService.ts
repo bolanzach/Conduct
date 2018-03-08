@@ -1,9 +1,6 @@
 import {RegisterService} from "../injection/metaDecorators";
 import {Metronome} from "./metronome";
-import {Conduct} from "../conductEngine";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
-import {ClientMetronome} from "./clientMetronome";
-import {ServerMetronome} from "./serverMetronome";
 
 /**
  * Proxy Service for the Metronome. Supports timing for either a client or server Metronome
@@ -14,8 +11,13 @@ export class MetronomeService implements Metronome {
   private metronome: Metronome;
   
   constructor () {
-    let clazz: any = Conduct.config().isClient() ? ClientMetronome : ServerMetronome;
-    this.metronome = ServiceProvider.get(clazz);
+    let classLoader: any;
+    if (process.env.CLIENT) {
+      classLoader = require('../../client/chrono/clientMetronome').ClientMetronome;
+    } else {
+      classLoader = require('../../server/chrono/serverMetronome').ServerMetronome;
+    }
+    this.metronome = ServiceProvider.get(classLoader);
   }
   
   start(fps: number) {

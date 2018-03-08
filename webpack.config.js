@@ -2,23 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const fs = require('fs');
 
-// module.exports = {
-//   entry: ['./src/core/conductEngine.ts', './src/game.ts'],
-//   output: {
-//     filename: 'bundle.js',
-//     path: path.resolve(__dirname, 'dist')
-//   },
-//   resolve: {
-//     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
-//   },
-//   devtool: "source-map",
-//   target: 'node',
-//   module: {
-//     loaders: [
-//       { test: /\.tsx?$/, loader: "ts-loader" }
-//     ]
-//   }
-// };
 var nodeModules = {};
 fs.readdirSync('node_modules')
   .filter(function(x) {
@@ -47,7 +30,15 @@ var serverConfig = {
         exclude: path.resolve(__dirname, './src/client') }
     ]
   },
-  externals: nodeModules
+  externals: nodeModules,
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env": {
+        CLIENT: JSON.stringify(false),
+        SERVER: JSON.stringify(true)
+      }
+    })
+  ]
 };
 
 var clientConfig = {
@@ -65,15 +56,21 @@ var clientConfig = {
     loaders: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        exclude: path.resolve(__dirname, './src/server')
+        loader: "ts-loader"
       }
     ]
   },
   node: {
     fs: 'empty'
-  }
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env": {
+        CLIENT: JSON.stringify(true),
+        SERVER: JSON.stringify(false)
+      }
+    })
+  ]
 };
 
-// module.exports = [serverConfig, clientConfig];
-module.exports = [clientConfig];
+module.exports = [serverConfig, clientConfig];

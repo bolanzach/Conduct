@@ -9,10 +9,10 @@ let config: ConductConfig = new ConductConfig.Builder('2d').setFramesPerSecond(1
 
 Conduct.Init(config, function (scene: Scene) {
   
-  scene.addBehavior(ParentTestBehavior)({ test: 'zach' });
-  // let test: TestBehavior = scene.getBehavior(TestBehavior);
-  //
-  // test.addBehavior(NetworkBehavior)({});
+  scene.addBehavior(TestBehavior)({ test: 'zach' });
+  let test: TestBehavior = scene.getBehavior(TestBehavior);
+
+  test.addBehavior(NetworkBehavior)({});
   
   
 

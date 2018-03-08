@@ -1,8 +1,8 @@
-import {Metronome} from "./metronome";
-import {RegisterService} from "../injection/metaDecorators";
+import {Metronome} from "../../core/chrono/metronome";
+import {RegisterService} from "../../core/injection/metaDecorators";
 
 @RegisterService()
-export class ClientMetronome implements Metronome {
+export class ServerMetronome implements Metronome {
   
   private isRunning: boolean = false;
   private listeners: Array<Function> = [];
@@ -17,14 +17,15 @@ export class ClientMetronome implements Metronome {
     this.maxFPS = 60;
   }
   
-  public start (fps: number) {
+  start(fps: number) {
     if (this.isRunning) {
       return;
     }
-    
+  
+    fps = (fps > this.maxFPS) ? this.maxFPS : fps;
     this.timeStep = 1000 / fps;
     this.isRunning = true;
-    requestAnimationFrame(this.mainLoop);
+    setImmediate(this.mainLoop);
   }
   
   public registerToTicks (callback: Function): string {
@@ -36,21 +37,20 @@ export class ClientMetronome implements Metronome {
     this.listeners = this.listeners.filter((cb) => cb.toString() !== callback.toString());
   }
   
-  private mainLoop = (timestamp) => {
-    this.delta += timestamp - this.lastFrameTimeMs;
-    this.lastFrameTimeMs = timestamp;
+  private mainLoop = () => {
+    let now = Date.now();
+    this.delta += now - this.lastFrameTimeMs;
     
-    while (this.delta >= this.timeStep) {
-      this.tick(this.timeStep);
-      this.delta -= this.timeStep;
+    if (this.lastFrameTimeMs + this.timeStep < now) {
+      this.lastFrameTimeMs = now;
+      this.tick(this.delta);
     }
     
-    // this.tick(this.delta);
-    // draw() ?
-    requestAnimationFrame(this.mainLoop);
+    setImmediate(this.mainLoop);
   };
   
   private tick (delta: number) {
     (this.listeners || []).forEach((cb) => cb(delta));
   }
+  
 }

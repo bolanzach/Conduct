@@ -1,9 +1,6 @@
 import {RegisterService} from "../injection/metaDecorators";
 import {NetworkBehavior} from "./networkBehavior";
-import {Conduct} from "../conductEngine";
 import {Network} from "./network";
-import {ClientNetworkService} from "../../client/network/clientNetworkService";
-import {ServerNetworkService} from "../../server/network/serverNetworkService";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 
 @RegisterService()
@@ -12,8 +9,13 @@ export class NetworkService implements Network {
   private service: Network;
 
   constructor () {
-    let clazz: any = Conduct.config().isClient() ? ClientNetworkService : ServerNetworkService;
-    this.service = ServiceProvider.get(clazz);
+    let classLoader: any;
+    if (process.env.CLIENT) {
+      classLoader = require('../../client/network/clientNetworkService').ClientNetworkService;
+    } else {
+      classLoader = require('../../server/network/serverNetworkService').ServerNetworkService;
+    }
+    this.service = ServiceProvider.get(classLoader);
   }
 
   public register (networkBehavior: NetworkBehavior) {

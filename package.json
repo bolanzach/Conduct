@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "bufferutil": "^3.0.3",
+    "npm": "^5.7.1",
     "utf-8-validate": "^4.0.0",
     "ws": "^4.0.0"
   },
