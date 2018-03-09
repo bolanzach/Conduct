@@ -19,8 +19,6 @@ export class Conduct {
       return;
     }
     
-    console.log('Conduct Init');
-    
     Conduct.engineConfig = config;
   
     // Release injected services so they can be constructed
