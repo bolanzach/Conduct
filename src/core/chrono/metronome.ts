@@ -1,6 +1,4 @@
-import {Service} from "../service/service";
-
-export interface Metronome extends Service {
+export interface Metronome {
   start (fps: number);
   registerToTicks (callback: Function): string
   unregisterToTicks (callback: string);

@@ -1,8 +1,9 @@
 import {Metronome} from "../../core/chrono/metronome";
 import {RegisterService} from "../../core/injection/metaDecorators";
+import {ConductService} from "../../core/service/conductService";
 
 @RegisterService()
-export class ClientMetronome implements Metronome {
+export class ClientMetronome extends ConductService implements Metronome {
   
   private isRunning: boolean = false;
   private listeners: Array<Function> = [];
@@ -12,6 +13,7 @@ export class ClientMetronome implements Metronome {
   private maxFPS: number;
   
   constructor () {
+    super();
     this.lastFrameTimeMs = 0;
     this.delta = 0;
     this.maxFPS = 60;

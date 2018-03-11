@@ -3,15 +3,17 @@ import {RegisterEvent, RegisterService} from "../../core/injection/metaDecorator
 import {Network} from "../../core/network/network";
 import {UpdateEvent} from "../../core/event/updateEvent";
 import {NetworkUpdateEvent} from "../../core/network/networkUpdateEvent";
+import {ConductService} from "../../core/service/conductService";
 
 @RegisterService()
-export class ClientNetworkService implements Network {
+export class ClientNetworkService extends ConductService implements Network {
   
   private socket;
   private updateDelta: number;
   private behaviorProperties = {};
   
   constructor () {
+    super();
     this.socket = new WebSocket('ws://localhost:8080');
     this.socket.onopen = () => {
       this.socket.send('CONNECTED');
@@ -36,13 +38,14 @@ export class ClientNetworkService implements Network {
   }
   
   @RegisterEvent()
-  update (event: UpdateEvent) {
-    if ((event.delta - this.updateDelta) > 1000) {
-      this.behaviorProperties = {};
-      new NetworkUpdateEvent().send();
-      this.updateDelta = event.delta;
-      this.emit('behaviorPropertyUpdates', this.behaviorProperties);
-    }
+  update () {
+    // if ((event.delta - this.updateDelta) > 1000) {
+    //   this.behaviorProperties = {};
+    //   new NetworkUpdateEvent().send();
+    //   this.updateDelta = event.delta;
+    //   this.emit('behaviorPropertyUpdates', this.behaviorProperties);
+    // }
+    console.log('a');
   }
   
   private handleIncoming () {

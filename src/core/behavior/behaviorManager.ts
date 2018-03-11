@@ -5,8 +5,6 @@ import {getConstructorName} from "../injection/metaDecorators";
 import {Scene} from "../behaviors/scene";
 import {BehaviorRecord} from "../injection/provider/behaviorRecord";
 import {EventProvider} from "../injection/provider/eventProvider";
-import {EventService} from "../event/eventService";
-import {ServiceProvider} from "../injection/provider/serviceProvider";
 
 export class BehaviorManager {
 
@@ -235,8 +233,8 @@ export class BehaviorManager {
     this.behaviorsToUpdate[id] = behavior;
     this.assemblers[id] = assembler;
     
-    EventProvider.getRegisteredEvents(assembler.name).forEach(providedEvent => {
-      EventService.registerEvent(providedEvent.event, behavior, providedEvent.priority);
+    EventProvider.getRegisteredEventsMetadata(assembler.name).forEach(providedEvent => {
+      EventProvider.registerComponent(providedEvent, behavior);
     });
     
     behavior.onAwake();

@@ -1,9 +1,13 @@
 import {RegisterService} from "../injection/metaDecorators";
-import {Service} from "../service/service";
+import {ConductService} from "../service/conductService";
 
 @RegisterService()
-export class UtilsService implements Service {
+export class UtilsService extends ConductService {
   private idCount: number = 0;
+  
+  constructor () {
+    super();
+  }
   
   public generateId (prefix?: string): string {
     if (this.idCount === Number.MAX_VALUE) {

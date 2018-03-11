@@ -1,13 +1,11 @@
-import {ServiceProvider} from "../injection/provider/serviceProvider";
-import {EventService} from "./eventService";
+import {EventProvider} from "../injection/provider/eventProvider";
 
 export class ConductEvent {
   
-  private static eventService: EventService;
   private _eventName: string;
+  private _isCancelled: boolean;
   
   constructor (eventName: string) {
-    ConductEvent.eventService = ServiceProvider.get(EventService);
     this._eventName = eventName;
   }
   
@@ -15,9 +13,23 @@ export class ConductEvent {
     return this._eventName;
   }
   
+  /**
+   * Cancels this event. No other callbacks will be invoked after this is called
+   */
+  cancel (): void {
+    this._isCancelled = true;
+  }
+  
+  isCancelled (): boolean {
+    return this._isCancelled;
+  }
+  
+  /**
+   * Emit this event
+   */
   send (): void {
     if (this.eventName.length > 0 ) {
-      ConductEvent.eventService.sendEvent(this);
+      EventProvider.sendEvent(this);
     }
   }
 }

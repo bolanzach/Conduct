@@ -1,8 +1,7 @@
 import {getConstructorName} from "../metaDecorators";
-import {Service} from "../../service/service";
 import {Conduct} from "../../conductEngine";
 import {EventProvider} from "./eventProvider";
-import {EventService} from "../../event/eventService";
+import {Service} from "../../service/service";
 
 export class ServiceProvider {
   
@@ -41,7 +40,7 @@ export class ServiceProvider {
    * @param service
    * @returns {}
    */
-  public static get <T extends Service>(service: new (...args: any[]) => T | Function): T {
+  public static get <T extends Service>(service: new (...args: any[]) => T): T {
     let dependency = ServiceProvider.injected[getConstructorName(service)];
     if (dependency) {
       return dependency
@@ -79,8 +78,8 @@ export class ServiceProvider {
     ServiceProvider.injected[name] = service;
     delete ServiceProvider.registered[name];
   
-    EventProvider.getRegisteredEvents(name).forEach(providedEvent => {
-      EventService.registerEvent(providedEvent.event, service, providedEvent.priority);
+    EventProvider.getRegisteredEventsMetadata(name).forEach(providedEvent => {
+      EventProvider.registerComponent(providedEvent, service, );
     });
   }
 

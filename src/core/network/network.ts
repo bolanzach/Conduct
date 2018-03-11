@@ -1,6 +1,7 @@
 import {NetworkBehavior} from "./networkBehavior";
+import {Service} from "../service/service";
 
-export interface Network {
+export interface Network extends Service {
   
   /**
    * Register a NetworkBehavior to the Network

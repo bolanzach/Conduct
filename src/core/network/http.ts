@@ -1,12 +1,10 @@
-import {Service} from "../service/service";
+import {ConductService} from "../service/conductService";
 import {RegisterService} from "../injection/metaDecorators";
 
 @RegisterService()
-export class Http implements Service {
+export class Http extends ConductService {
   
   private defaultRequestHeader = { key: 'Content-Type', value: 'application/json;charset=UTF-8' };
-  
-  constructor () {}
   
   public get (url: string, callback?: Function) {
     return this.makeRequest('GET', url, null, callback);

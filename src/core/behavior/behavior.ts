@@ -9,12 +9,14 @@ export abstract class Behavior {
   private id: string;
   private active: boolean = false;
   
-  protected utilsService: UtilsService = ServiceProvider.get(UtilsService);
+  protected static utilsService: UtilsService;
   
   constructor () {
     let result = /^function\s+([\w\$]+)\s*\(/.exec(this.constructor.toString());
     let behaviorType = result && result[1] || 'B';
-    this.id = this.utilsService.generateId(behaviorType);
+    
+    Behavior.utilsService = ServiceProvider.get(UtilsService);
+    this.id = Behavior.utilsService.generateId(behaviorType);
     this.active = true;
   }
   

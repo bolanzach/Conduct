@@ -2,13 +2,16 @@ import {RegisterService} from "../injection/metaDecorators";
 import {NetworkBehavior} from "./networkBehavior";
 import {Network} from "./network";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
+import {ConductService} from "../service/conductService";
 
 @RegisterService()
-export class NetworkService implements Network {
+export class NetworkService extends ConductService implements Network {
   
   private service: Network;
 
   constructor () {
+    super();
+    
     let classLoader: any;
     if (process.env.CLIENT) {
       classLoader = require('../../client/network/clientNetworkService').ClientNetworkService;
