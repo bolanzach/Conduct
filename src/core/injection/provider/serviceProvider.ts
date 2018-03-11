@@ -1,6 +1,8 @@
 import {getConstructorName} from "../metaDecorators";
 import {Service} from "../../service/service";
 import {Conduct} from "../../conductEngine";
+import {EventProvider} from "./eventProvider";
+import {EventService} from "../../event/eventService";
 
 export class ServiceProvider {
   
@@ -73,8 +75,13 @@ export class ServiceProvider {
     }
     
     let dependencies = args.map(arg => ServiceProvider.injected[arg]);
-    ServiceProvider.injected[name] = new clazz(...dependencies);
+    let service = new clazz(...dependencies);
+    ServiceProvider.injected[name] = service;
     delete ServiceProvider.registered[name];
+  
+    EventProvider.getRegisteredEvents(name).forEach(providedEvent => {
+      EventService.registerEvent(providedEvent.event, service, providedEvent.priority);
+    });
   }
 
 }

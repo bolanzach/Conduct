@@ -5,7 +5,7 @@ import {ServiceProvider} from "../injection/provider/serviceProvider";
 
 @RegisterService()
 export class NetworkService implements Network {
-
+  
   private service: Network;
 
   constructor () {
@@ -26,12 +26,12 @@ export class NetworkService implements Network {
     this.service.deregister(networkBehavior);
   }
   
-  public emit (message: string, data: any) {
-    this.service.emit(message, data);
+  public emit (event: string, data: any) {
+    this.service.emit(event, data);
   }
   
-  public emitProperty (networkId: string, prop: string, value: string) {
-    this.service.emitProperty(networkId, prop, value);
+  public emitBehaviorProperties (networkId: string, properties: any) {
+    this.service.emitBehaviorProperties(networkId, properties);
   }
 
 }

@@ -31,7 +31,7 @@ export class ServerNetworkService implements Network {
 
   }
   
-  public emitProperty (networkId: string, prop: string, value: string) {
+  public emitBehaviorProperties (networkId: string, propertries: any) {
   
   }
   //

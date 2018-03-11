@@ -9,6 +9,7 @@ export class ClientNetworkService implements Network {
   
   private socket;
   private updateDelta: number;
+  private behaviorProperties = {};
   
   constructor () {
     this.socket = new WebSocket('ws://localhost:8080');
@@ -25,19 +26,22 @@ export class ClientNetworkService implements Network {
   
   }
   
-  public emit (message: string, data: any) {
-  
+  public emit (event: string, data: any) {
+    let message = { event: event, data: data };
+    this.socket.send(JSON.stringify(message));
   }
   
-  public emitProperty (networkId: string, prop: string, value: string) {
-  
+  public emitBehaviorProperties (networkId: string, properties: any) {
+    this.behaviorProperties[networkId] = properties;
   }
   
   @RegisterEvent()
   update (event: UpdateEvent) {
     if ((event.delta - this.updateDelta) > 1000) {
+      this.behaviorProperties = {};
       new NetworkUpdateEvent().send();
       this.updateDelta = event.delta;
+      this.emit('behaviorPropertyUpdates', this.behaviorProperties);
     }
   }
   

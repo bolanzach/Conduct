@@ -7,8 +7,6 @@ import {BehaviorRecord} from "../injection/provider/behaviorRecord";
 import {EventProvider} from "../injection/provider/eventProvider";
 import {EventService} from "../event/eventService";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
-import {ConductEvent} from "../event/conductEvent";
-import {UpdateEvent} from "../event/updateEvent";
 
 export class BehaviorManager {
 
@@ -221,7 +219,6 @@ export class BehaviorManager {
     let id: string;
     let dependencies = [];
     let config = assembler.record;
-    let eventService: EventService = ServiceProvider.get(EventService);
     
     if (parentAssembler) {
       let activeBehaviors = parentAssembler.activeChildren;
@@ -239,7 +236,7 @@ export class BehaviorManager {
     this.assemblers[id] = assembler;
     
     EventProvider.getRegisteredEvents(assembler.name).forEach(providedEvent => {
-      eventService.registerEvent(providedEvent.event, behavior, providedEvent.priority);
+      EventService.registerEvent(providedEvent.event, behavior, providedEvent.priority);
     });
     
     behavior.onAwake();

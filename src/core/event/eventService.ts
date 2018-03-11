@@ -5,21 +5,21 @@ import {RegisterService} from "../injection/metaDecorators";
 @RegisterService()
 export class EventService {
   
-  private registeredEvents = {};
+  private static registeredEvents = {};
   
-  private sortPriorities (a: EventRecord, b: EventRecord) {
+  private static sortPriorities (a: EventRecord, b: EventRecord) {
     if (a.priority < b.priority) return -1;
     if (a.priority > b.priority) return 1;
     return 0;
   }
   
-  private createEventRecord (targetComponent: any, key: string, priority: number) {
+  private static createEventRecord (targetComponent: any, key: string, priority: number) {
     let id = targetComponent.getId && targetComponent.getId();
     return (id && targetComponent[key]) ? new EventRecord(id, targetComponent, key, priority) : null;
   }
   
-  registerEvent (event: string, targetComponent: any, priority: number) {
-    let events: Array<EventRecord> = this.registeredEvents[event] || [];
+  static registerEvent (event: string, targetComponent: any, priority: number) {
+    let events: Array<EventRecord> = EventService.registeredEvents[event] || [];
     let record = this.createEventRecord(targetComponent, event, priority);
     
     if (!record) {
@@ -28,7 +28,7 @@ export class EventService {
     
     events.push(record);
     events.sort(this.sortPriorities);
-    this.registeredEvents[event] = events;
+    EventService.registeredEvents[event] = events;
   }
   
   deregisterAll (id: string) {
@@ -40,7 +40,7 @@ export class EventService {
   }
   
   sendEvent (event: ConductEvent) {
-    let events: Array<EventRecord> = this.registeredEvents[event.eventName] || [];
+    let events: Array<EventRecord> = EventService.registeredEvents[event.eventName] || [];
     events.forEach((record: EventRecord) => {
       let component = record.targetComponent;
       let handler: string = record.key;
