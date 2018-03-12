@@ -4,16 +4,21 @@ import {Network} from "../../core/network/network";
 import {UpdateEvent} from "../../core/event/updateEvent";
 import {NetworkUpdateEvent} from "../../core/network/networkUpdateEvent";
 import {ConductService} from "../../core/service/conductService";
+import {UtilsService} from "../../core/util/utilsService";
+import {ServiceProvider} from "../../core/injection/provider/serviceProvider";
 
 @RegisterService()
 export class ClientNetworkService extends ConductService implements Network {
   
   private socket;
-  private updateDelta: number;
-  private behaviorProperties = {};
+  private behaviors = {};
+  
+  private utils: UtilsService;
   
   constructor () {
     super();
+    
+    this.utils = ServiceProvider.get(UtilsService);
     this.socket = new WebSocket('ws://localhost:8080');
     this.socket.onopen = () => {
       this.socket.send('CONNECTED');
@@ -21,7 +26,7 @@ export class ClientNetworkService extends ConductService implements Network {
   }
   
   public register (networkBehavior: NetworkBehavior) {
-  
+    this.behaviors[networkBehavior.getId()] = networkBehavior;
   }
   
   public deregister (networkBehavior: NetworkBehavior) {
@@ -33,15 +38,16 @@ export class ClientNetworkService extends ConductService implements Network {
     this.socket.send(JSON.stringify(message));
   }
   
-  public emitBehaviorProperties (networkId: string, properties: any) {
-    this.behaviorProperties[networkId] = properties;
-  }
   
   @RegisterEvent()
   update (event: UpdateEvent) {
-    this.behaviorProperties = {};
+    let propertiesToEmit = {};
+    this.utils.forEach(this.behaviors, (networkBehavior: NetworkBehavior, key) => {
+      propertiesToEmit[key] = networkBehavior.getNetworkedProperties();
+    });
+    
     new NetworkUpdateEvent().send();
-    this.emit('behaviorPropertyUpdates', this.behaviorProperties);
+    this.emit('behaviorPropertyUpdates', propertiesToEmit);
   }
   
   private handleIncoming () {

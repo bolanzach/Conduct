@@ -32,9 +32,5 @@ export class NetworkService extends ConductService implements Network {
   public emit (event: string, data: any) {
     this.service.emit(event, data);
   }
-  
-  public emitBehaviorProperties (networkId: string, properties: any) {
-    this.service.emitBehaviorProperties(networkId, properties);
-  }
 
 }

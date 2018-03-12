@@ -22,7 +22,7 @@ export class UtilsService extends ConductService {
    * @param obj f{Object} object to iterate
    * @param cb {Function} invoked for each property with the key's value and the key itself
    */
-  public forEach (obj: Object, cb: Function) {
+  public forEach (obj: Object, cb: (value, key?) => void) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         cb(obj[key], key);

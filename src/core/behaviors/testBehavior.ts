@@ -1,4 +1,4 @@
-import {RegisterBehavior, RegisterEvent} from "../injection/metaDecorators";
+import {RegisterBehavior} from "../injection/metaDecorators";
 import {GameObject} from "../behavior/gameObject";
 
 @RegisterBehavior()
@@ -13,11 +13,6 @@ export class TestBehavior extends GameObject {
   }
   
   onAwake () {
-  
-  }
-  
-  @RegisterEvent()
-  update () {
   
   }
   

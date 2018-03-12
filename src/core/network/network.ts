@@ -15,10 +15,10 @@ export interface Network extends Service {
    */
   deregister (behavior: NetworkBehavior);
   
-  emit (event: string, data: any);
-  
   /**
-   * Send a Behavior's data from client to server or from server to client.
+   * Sends websocket message
+   * @param {string} event
+   * @param data
    */
-  emitBehaviorProperties (networkId: string, properties: any);
+  emit (event: string, data: any);
 }

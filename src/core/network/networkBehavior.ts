@@ -20,16 +20,18 @@ export class NetworkBehavior extends Behavior {
     NetworkBehavior.networkService.register(this);
   }
   
-  @RegisterEvent()
-  networkUpdate () {
+  getNetworkedProperties () {
     let parent = this.getParent();
-    let networkProperties = (this.properties || []).reduce((properties, nProp) => {
+    return (this.properties || []).reduce((properties, nProp) => {
       if (parent[nProp]) {
         properties[nProp] = parent[nProp].toString();
       }
       return properties;
     }, {});
-    NetworkBehavior.networkService.emitBehaviorProperties(this.getId(), networkProperties);
+  }
+  
+  setNetworkedProperties (networkProperties) {
+  
   }
 
 }
