@@ -7,6 +7,7 @@ import {ConductService} from "../../core/service/conductService";
 @RegisterService()
 export class ServerNetworkService extends ConductService implements Network {
 
+  private behaviors = {};
   private server: WebSocket.Server;
   
   constructor () {
@@ -16,7 +17,8 @@ export class ServerNetworkService extends ConductService implements Network {
   }
 
   public register (networkBehavior: NetworkBehavior) {
-
+    this.behaviors[networkBehavior.getId()] = networkBehavior;
+    console.log(networkBehavior.getId());
   }
 
   public deregister (networkBehavior: NetworkBehavior) {
@@ -35,5 +37,9 @@ export class ServerNetworkService extends ConductService implements Network {
     ws.on('propertyUpdates', function (idk) {
       console.log(idk);
     });
+  }
+  
+  private onPropertyUpdates (networkProperties) {
+  
   }
 }

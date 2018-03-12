@@ -49,13 +49,7 @@ export class ClientNetworkService extends ConductService implements Network {
     new NetworkUpdateEvent().send();
     this.emit('behaviorPropertyUpdates', propertiesToEmit);
   }
-  
-  private handleIncoming () {
-    this.socket.on('propertyUpdates', function (idk) {
-    
-    });
-  }
-  
+
   private connect () {
   
   }
