@@ -1,9 +1,7 @@
 import {Conduct} from "../conductEngine";
 import {UtilsService} from "../util/utilsService";
-import {RegisterBehavior} from '../injection/metaDecorators';
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 
-@RegisterBehavior()
 export abstract class Behavior {
   
   private id: string;

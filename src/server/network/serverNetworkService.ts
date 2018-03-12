@@ -18,6 +18,10 @@ export class ServerNetworkService extends ConductService implements Network {
       });
     
       console.log('connected');
+  
+      ws.on('propertyUpdates', function (idk) {
+        console.log(idk);
+      });
     });
   }
 

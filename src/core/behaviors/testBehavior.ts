@@ -4,12 +4,12 @@ import {GameObject} from "../behavior/gameObject";
 @RegisterBehavior()
 export class TestBehavior extends GameObject {
   
-  private _zach: string;
+  private _message: string;
   
   constructor (props: any) {
     super(props);
     this.props = props;
-    this._zach = props.zach;
+    this._message = props.message;
   }
   
   onAwake () {
@@ -21,12 +21,12 @@ export class TestBehavior extends GameObject {
   
   }
   
-  get zach(): string {
-    return this._zach;
+  get message(): string {
+    return this._message;
   }
   
-  set zach(value: string) {
-    this._zach = value;
+  set message(value: string) {
+    this._message = value;
   }
   
 }

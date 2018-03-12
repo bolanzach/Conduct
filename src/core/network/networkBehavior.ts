@@ -21,12 +21,15 @@ export class NetworkBehavior extends Behavior {
   }
   
   @RegisterEvent()
-  update () {
-    let properties = {};
-    (this.properties || []).forEach(prop => {
-      properties[prop] = this.getParent()[prop].toString();
-    });
-    
+  networkUpdate () {
+    let parent = this.getParent();
+    let networkProperties = (this.properties || []).reduce((properties, nProp) => {
+      if (parent[nProp]) {
+        properties[nProp] = parent[nProp].toString();
+      }
+      return properties;
+    }, {});
+    NetworkBehavior.networkService.emitBehaviorProperties(this.getId(), networkProperties);
   }
 
 }

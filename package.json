@@ -19,7 +19,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json; webpack",
     "build-watch": "tsc -p tsconfig.json; webpack -w",
-    "server": "node dist/game.js"
+    "server": "node dist/server.js",
+    "server-debug": "node --inspect --inspect-brk dist/server.js"
   },
   "repository": {
     "type": "git",

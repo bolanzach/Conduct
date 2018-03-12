@@ -12,7 +12,7 @@ fs.readdirSync('node_modules')
   });
 
 var serverConfig = {
-  entry: ['./src/game.ts'], // './src/core/conductEngine.ts'
+  entry: ['./src/server.ts'], // './src/core/conductEngine.ts'
   output: {
     filename: 'bundle.node.js',
     path: path.resolve(__dirname, 'dist')
@@ -42,7 +42,7 @@ var serverConfig = {
 };
 
 var clientConfig = {
-  entry: ['./src/game.ts'], // './src/core/conductEngine.ts'
+  entry: ['./src/client.ts'], // './src/core/conductEngine.ts'
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')

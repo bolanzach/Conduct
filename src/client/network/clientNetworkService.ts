@@ -38,14 +38,10 @@ export class ClientNetworkService extends ConductService implements Network {
   }
   
   @RegisterEvent()
-  update () {
-    // if ((event.delta - this.updateDelta) > 1000) {
-    //   this.behaviorProperties = {};
-    //   new NetworkUpdateEvent().send();
-    //   this.updateDelta = event.delta;
-    //   this.emit('behaviorPropertyUpdates', this.behaviorProperties);
-    // }
-    console.log('a');
+  update (event: UpdateEvent) {
+    this.behaviorProperties = {};
+    new NetworkUpdateEvent().send();
+    this.emit('behaviorPropertyUpdates', this.behaviorProperties);
   }
   
   private handleIncoming () {

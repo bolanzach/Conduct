@@ -12,7 +12,7 @@ To install the current version:
 ```
 npm install conduct-engine
 ```
-Create a new `game.ts ` for the entry point of your game and start the engine
+Create a new `client.ts ` for the entry point of your game and start the engine
 ```
 import {Conduct} from "./core/conductEngine";
 import {ConductConfig} from "./core/conductConfig";
