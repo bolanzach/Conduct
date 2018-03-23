@@ -24,26 +24,45 @@ Conduct.Init(config, function (scene: Scene) {
 });
 ```
 
-### Conduct Engine Design Theory
+## Conduct Engine Design Theory
 
-Many modern game engines have some concept of a component system. 
+Below is a living paper documenting what the Conduct Engine is as well as its general architecture
+and the principal theories that drive it. This is not meant to be tutorial but rather a place to
+capture my thoughts and share the ideas behind the game engine.
+
+### Component Entity Systems
+
+Many modern game engines have some concept of a "component system". 
 The Unity Engine for example makes use of constructs such as GameObjects and MonoBehavior scripts
 where the developer attaches one or more scripts to a GameObject to give that object behaviors in
 the game world. This is reminiscent of the pure "Component Entity System" architectural pattern used
-to build games. In this construct, Entities have absolutely no logic and act only as "buckets of 
-Components". In some forms, Entities are not even represented as objects but rather as simply globally 
-unique ids. Components then also contain no logic and are simply "buckets of data". Components may
-attach and detach themselves from an entity, signifying that entity has a specific "behavior". For 
-example, entity-123 may have two components: a Transform Component and Sprite component. Together,
-entity-123 can be described as having a position in the world (Transform) and is visualized as an
-image (Sprite). However, as mentioned, no logic lives inside these Components. It is up to the Systems
-to provide all the logic. Systems act on a collection of Components, mutating their properties to drive
-the state of the game. A MoveSystem that is supposed to move an object in game space may collect all
-Components of type Transform on each frame update and adjust the Transform Component's x y z properties
-by some delta like so:
+to build games. In this construct there are three distinct actors:
+
+1. Entities
+2. Components
+4. Systems
+
+Entities have absolutely no logic and act only as "buckets of 
+Components". In some forms, this idea is taken to the extreme and Entities are not even represented as 
+objects but rather as simply globally 
+unique ids. 
+
+Components then also contain no logic and are simply "buckets of data", very much like a POJO. Components may attach and detach 
+themselves from an entity (who does the actual "attaching" is irrelevant). When attached, this signifies 
+that entity has a specific "behavior". For example, entity-123 may have two components: a Transform 
+Component and Sprite component. Together, entity-123 can be described as having a position in the world 
+(Transform) and is visualized as an image (Sprite). However, as mentioned, no logic lives inside these 
+Components as they are simply buckets of data.
+
+It is up to the Systems to provide all the logic for a game. Systems act on a collection of Components, 
+mutating their Component's properties to drive the state of the game. A MoveSystem that is supposed to
+move an object in game space may collect all Components of type Transform on each frame update and 
+adjust the Transform Component's x y z properties by some delta like so:
 ```
-// pusedo code of a Movement System
+// Pusedo code of a Movement System
 MovementSystem {
+
+    // Each fram of the game...
     update () {
         let transformComponents = getAllComponentsOfType(Transform);
         transformComponents.forEach(transform => {
@@ -58,6 +77,8 @@ It's important to note that Systems may require more than one Component to opera
 may need any number of Components in order to properly render an image on the screen. In this case, only
 Entities that have _all_ the required attached Components would have their associated Components updated
 by the System.
+
+### Components vs Inheritance
 
 This architecture solves some keys pitfalls of typical OOP found in game design, namely the diamond of death. 
 The problem occurs when you have a deep inheritance hierarchy and need to extend from another, unrelated
@@ -77,11 +98,18 @@ the material it is made of. To make the House begin to attack the player, just a
 Want to make it friendly - remove Enemy and add the Friend Component. The Systems in the game will pick up these changes and 
 run their game logic on the Components, dynamically describing the behavior of the House.
 
+### Conduct Behaviors
+
 The Conduct Engine takes these principles and expands upon them, borrowing from compositional designs made 
 popular by web frameworks that many frontend JavaScript developers are familiar with. The result is a powerful 
 yet familiar and easy to use framework. 
 
 At its core (and partially where the engine takes its name) is the concept of a Behavior. Everything in your
 game world can be described as _being_ a Behavior and as _having_ Behavior(s). Each Behavior describes some
-form of functionality or logic in your game and is meant to be reusable.
+form of functionality or logic in your game. In literal words, a Behavior describes a certain _behavior_ in your
+game. Much like Components in the traditional sense, Conduct Behaviors are added and removed to describe the 
+behavior of what they are attached to. Unlike Components however, Behaviors are attached to other Behaviors,
+there are no Game Objects!
+
+
 
