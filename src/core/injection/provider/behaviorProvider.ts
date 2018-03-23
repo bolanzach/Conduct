@@ -21,7 +21,7 @@ export class BehaviorProvider {
     let registeredBehavior: BehaviorRecord = BehaviorProvider.registered[behaviorName.toUpperCase()];
     
     if (!registeredBehavior) {
-      console.error('No Behavior has been registered of type ', behaviorName);
+      console.error('No ConductBehavior has been registered of type ', behaviorName);
       return;
     }
     

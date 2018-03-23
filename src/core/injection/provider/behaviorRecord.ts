@@ -1,6 +1,6 @@
 /**
- * Represents a class registered as a Behavior.
- * This is a record the Behavior's name, constructor, dependencies, etc
+ * Represents a class registered as a ConductBehavior.
+ * This is a record the ConductBehavior's name, constructor, dependencies, etc
  */
 export class BehaviorRecord {
   

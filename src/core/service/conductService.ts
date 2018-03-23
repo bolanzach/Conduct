@@ -6,14 +6,15 @@ export abstract class ConductService implements Service {
   
   private id: string;
   
+  protected static utils: UtilsService;
+  
   constructor () {
-    let result = /^function\s+([\w\$]+)\s*\(/.exec(this.constructor.toString());
-    let behaviorType = result && result[1] || 'B';
-    
     if (this instanceof UtilsService) {
-      this.id = this.generateId(behaviorType);
+      ConductService.utils = this;
+      this.id = this.generateServiceId(this);
     } else {
-      this.id = ServiceProvider.get(UtilsService).generateId(behaviorType);
+      ConductService.utils = ServiceProvider.get(UtilsService);
+      this.id = ConductService.utils.generateServiceId(this);
     }
   }
   

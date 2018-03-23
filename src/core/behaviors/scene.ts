@@ -1,11 +1,11 @@
-import {Behavior} from "../behavior/behavior";
+import {ConductBehavior} from "../behavior/conductBehavior";
 import {RegisterBehavior} from "../injection/metaDecorators";
 
 @RegisterBehavior()
-export class Scene extends Behavior {
+export class Scene extends ConductBehavior {
   
   constructor () {
-    super();
+    super({ parentId: 'Conduct' });
   }
   
   public update() {

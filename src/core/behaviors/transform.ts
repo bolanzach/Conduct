@@ -1,8 +1,8 @@
 import {RegisterBehavior} from "../injection/metaDecorators";
-import {Behavior} from "../behavior/behavior";
+import {ConductBehavior} from "../behavior/conductBehavior";
 
 @RegisterBehavior()
-export class Transform extends Behavior {
+export class Transform extends ConductBehavior {
   
   x: number;
   y: number;
@@ -10,7 +10,7 @@ export class Transform extends Behavior {
   scale: number;
   
   constructor (props: any) {
-    super();
+    super(props);
     this.x = props.x || 0;
     this.y = props.y || 0;
     this.rotation = props.rotation || 0;

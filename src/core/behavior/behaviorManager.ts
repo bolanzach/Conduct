@@ -1,4 +1,4 @@
-import {Behavior} from "./behavior";
+import {ConductBehavior} from "./conductBehavior";
 import {BehaviorAssembler} from "../injection/behaviorAssembler";
 import {BehaviorProvider} from "../injection/provider/behaviorProvider";
 import {getConstructorName} from "../injection/metaDecorators";
@@ -14,16 +14,22 @@ export class BehaviorManager {
   public initScene (): Scene {
     new Scene(); // have to do something to Scene to have requirejs recognize the module. need a better way to do this
     let record: BehaviorRecord = BehaviorProvider.get('scene');
-    let newAssembler = new BehaviorAssembler(record, null);
+    let newAssembler = new BehaviorAssembler(record, '');
     let sceneBehavior = this.constructBehavior(newAssembler, null);
     return sceneBehavior as Scene;
   }
   
-  public attachBehaviorToBehavior <T extends Behavior>(attach: new (...args: any[]) => T, to: string): (props?: any) => void {
+  public attachBehaviorToBehavior <T extends ConductBehavior>(attach: new (...args: any[]) => T, to: string): (props?: any) => void {
     let newBehaviorName = getConstructorName(attach);
     let behaviorRecord = BehaviorProvider.get(newBehaviorName);
     let newAssembler = new BehaviorAssembler(behaviorRecord, to);
     let activeAssembler: BehaviorAssembler = this.assemblers[to];
+    
+    let createProps = function (props?) {
+      props = props || {};
+      props.parentId = activeAssembler.parent || activeAssembler.name;
+      return props;
+    };
     
     if (!activeAssembler) {
       // let a = this.idk[to];
@@ -45,12 +51,12 @@ export class BehaviorManager {
     activeAssembler.inactiveChildren[newBehaviorName] = newAssembler;
     
     return (props?: any) => {
-      activeAssembler.childrenAssemblerProps[newBehaviorName] = props || {};
+      activeAssembler.childrenAssemblerProps[newBehaviorName] = createProps(props);
       this.activateAssemblerChildren(activeAssembler);
     };
   }
   
-  public getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T, from: string): T {
+  public getBehavior <T extends ConductBehavior>(behavior: new (...args: any[]) => T, from: string): T {
     let parentBehavior: BehaviorAssembler = this.assemblers[from];
     
     if (!parentBehavior) {
@@ -61,11 +67,11 @@ export class BehaviorManager {
     return assembler.behavior;
   }
   
-  public find (id: string): Behavior | undefined {
+  public find (id: string): ConductBehavior | undefined {
     return this.behaviorsToUpdate[id];
   }
   
-  public getChildren (id: string): Array<Behavior> {
+  public getChildren (id: string): Array<ConductBehavior> {
     let parentBehavior: BehaviorAssembler = this.assemblers[id];
     
     if (!parentBehavior) {
@@ -84,10 +90,10 @@ export class BehaviorManager {
   }
   
   /**
-   * Deactivate the Behavior with the given id.
+   * Deactivate the ConductBehavior with the given id.
    * This function is not recursive in that it will deactivate all the child Behaviors - that should
-   * be contained within the Behavior class.
-   * This function will however recursively deactivate the parent Behavior if it requires that this
+   * be contained within the ConductBehavior class.
+   * This function will however recursively deactivate the parent ConductBehavior if it requires that this
    * child be activate.
    *
    * @param {string} id
@@ -97,10 +103,10 @@ export class BehaviorManager {
   }
   
   /**
-   * Destroy the Behavior with the given id.
+   * Destroy the ConductBehavior with the given id.
    * This function is not recursive in that it will destroy all the child Behaviors - that should
-   * be contained within the Behavior class.
-   * This function will however recursively destroy the parent Behavior if it requires that this
+   * be contained within the ConductBehavior class.
+   * This function will however recursively destroy the parent ConductBehavior if it requires that this
    * child exist.
    *
    * @param {string} id
@@ -127,9 +133,9 @@ export class BehaviorManager {
   }
   
   /**
-   * Behaviors can require that certain child Behaviors exist. When a Behavior is destroyed or deactivated and
-   * its parent requires it, the parent Behavior must be deactivated.
-   * This function recursively traverses up the parent Behavior's prototype chain checking if it or any of
+   * Behaviors can require that certain child Behaviors exist. When a ConductBehavior is destroyed or deactivated and
+   * its parent requires it, the parent ConductBehavior must be deactivated.
+   * This function recursively traverses up the parent ConductBehavior's prototype chain checking if it or any of
    * its super classes require the behavior that was removed.
    *
    * @param {string} parentId
@@ -174,7 +180,7 @@ export class BehaviorManager {
         behavior: this.constructBehavior(assemblerToActivate, assembler)
       };
       
-      // Recursively try to create the new Behavior's children
+      // Recursively try to create the new ConductBehavior's children
       this.activateAssemblerChildren(assemblerToActivate);
       return canActivate;
     });
@@ -202,18 +208,18 @@ export class BehaviorManager {
   }
   
   /**
-   * Creates a new Behavior from an Assembler.
-   * Registers the Assembler to the assemblers map and allows the new Behavior to be updated
+   * Creates a new ConductBehavior from an Assembler.
+   * Registers the Assembler to the assemblers map and allows the new ConductBehavior to be updated
    *
    * Warning: this does not check if the assembler can be activated and if all its dependencies have
-   * been satisfied. Run canActivate before calling this.
+   * been satisfied. Run canActivate() before calling this.
    *
    * @param {BehaviorAssembler} assembler
    * @param {BehaviorAssembler} parentAssembler
-   * @return {Behavior}
+   * @return {ConductBehavior}
    */
-  private constructBehavior (assembler: BehaviorAssembler, parentAssembler: BehaviorAssembler): Behavior {
-    let behavior: Behavior;
+  private constructBehavior (assembler: BehaviorAssembler, parentAssembler: BehaviorAssembler): ConductBehavior {
+    let behavior: ConductBehavior;
     let id: string;
     let dependencies = [];
     let config = assembler.record;

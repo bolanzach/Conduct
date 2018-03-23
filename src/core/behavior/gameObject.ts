@@ -1,14 +1,14 @@
-import {Behavior} from "./behavior";
+import {ConductBehavior} from "./conductBehavior";
 import {Transform} from "../behaviors/transform";
 import {RegisterBehavior} from "../injection/metaDecorators";
 
 @RegisterBehavior()
-export abstract class GameObject extends Behavior {
+export abstract class GameObject extends ConductBehavior {
   
   protected props: any;
   
   constructor (props: any) {
-    super();
+    super(props);
     this.props = props;
   }
   

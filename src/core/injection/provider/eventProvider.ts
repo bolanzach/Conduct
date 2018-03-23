@@ -9,7 +9,7 @@ import {ConductEvent} from "../../event/conductEvent";
  */
 export class EventProvider {
   
-  // Map of events registered using @RegisterEvent. The key is the Behavior or Service name
+  // Map of events registered using @RegisterEvent. The key is the ConductBehavior or Service name
   private static registeredEvents = {};
   
   // Map of classes that have events and callbacks attached to them. The key is an event name
@@ -44,7 +44,7 @@ export class EventProvider {
   }
   
   /**
-   * Registers the methods for an initialized Behavior or Component
+   * Registers the methods for an initialized ConductBehavior or Component
    */
   static registerComponent (event: any, targetComponent: any) {
     let eventName: string = event.name;

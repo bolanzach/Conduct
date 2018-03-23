@@ -1,19 +1,21 @@
 import {RegisterService} from "../injection/metaDecorators";
 import {ConductService} from "../service/conductService";
+import {ConductBehavior} from "../behavior/conductBehavior";
+import {Service} from "../service/service";
 
 @RegisterService()
 export class UtilsService extends ConductService {
-  private idCount: number = 0;
   
   constructor () {
     super();
   }
   
-  public generateId (prefix?: string): string {
-    if (this.idCount === Number.MAX_VALUE) {
-      this.idCount = 0;
-    }
-    return (prefix || 'e') + '.' + (this.idCount++) + '.' + new Date().getTime();
+  generateBehaviorId (behavior: ConductBehavior, parentId: string): string {
+    return parentId + behavior.constructor.name;
+  }
+  
+  generateServiceId (service: Service): string {
+    return service.constructor.name;
   }
   
   /**

@@ -2,26 +2,29 @@ import {Conduct} from "../conductEngine";
 import {UtilsService} from "../util/utilsService";
 import {ServiceProvider} from "../injection/provider/serviceProvider";
 
-export abstract class Behavior {
+
+export abstract class ConductBehavior {
   
   private id: string;
   private active: boolean = false;
   
-  protected static utilsService: UtilsService;
+  protected static utils: UtilsService;
   
-  constructor () {
-    let result = /^function\s+([\w\$]+)\s*\(/.exec(this.constructor.toString());
-    let behaviorType = result && result[1] || 'B';
+  constructor (props: { parentId: string }) {
+    if (!props || !props.parentId) {
+      console.error(this, ' does was not given a parentId on props');
+      return;
+    }
     
-    Behavior.utilsService = ServiceProvider.get(UtilsService);
-    this.id = Behavior.utilsService.generateId(behaviorType);
+    ConductBehavior.utils = ServiceProvider.get(UtilsService);
+    this.id = ConductBehavior.utils.generateBehaviorId(this, props.parentId);
     this.active = true;
   }
   
   public onAwake () {}
   
   public activate () {
-    this.active = true;
+    this.active = !!this.id;
   }
   
   public deactivate () {
@@ -35,15 +38,15 @@ export abstract class Behavior {
     this.getChildren().forEach((childBehavior) => childBehavior.destroy());
   }
   
-  public addBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): (props?: any) => void {
+  public addBehavior <T extends ConductBehavior>(behavior: new (...args: any[]) => T): (props?: any) => void {
     return Conduct.Behaviors().attachBehaviorToBehavior(behavior, this.getId());
   }
   
-  public getBehavior <T extends Behavior>(behavior: new (...args: any[]) => T): T {
+  public getBehavior <T extends ConductBehavior>(behavior: new (...args: any[]) => T): T {
     return Conduct.Behaviors().getBehavior(behavior, this.getId());
   }
   
-  public getChildren (): Array<Behavior> {
+  public getChildren (): Array<ConductBehavior> {
     return Conduct.Behaviors().getChildren(this.getId());
   }
   
@@ -55,7 +58,7 @@ export abstract class Behavior {
     return this.id;
   }
   
-  public getParent (): Behavior {
+  public getParent (): ConductBehavior {
     return Conduct.Behaviors().getParent(this.getId());
   }
   
