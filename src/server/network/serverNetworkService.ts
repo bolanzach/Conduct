@@ -18,7 +18,6 @@ export class ServerNetworkService extends ConductService implements Network {
 
   public register (networkBehavior: NetworkBehavior) {
     this.behaviors[networkBehavior.getId()] = networkBehavior;
-    console.log(networkBehavior.getId());
   }
 
   public deregister (networkBehavior: NetworkBehavior) {
@@ -29,17 +28,20 @@ export class ServerNetworkService extends ConductService implements Network {
 
   }
 
+  private receive (message: string) {
+    console.log(message);
+    return JSON.parse(message);
+  }
+
   private onConnect (ws) {
-    ws.on('message', function incoming(message) {
-      console.log('received: %s', message);
-    });
-    
-    ws.on('propertyUpdates', function (idk) {
-      console.log(idk);
+    ws.on('propertyUpdates', msg => {
+      console.log(msg);
+      let networkedProps = this.receive(msg);
     });
   }
   
-  private onPropertyUpdates (networkProperties) {
-  
+  private onPropertyUpdates (msg: string) {
+    let networkProps = this.receive(msg);
+    console.log(networkProps);
   }
 }

@@ -6,23 +6,21 @@ import {ServiceProvider} from "../injection/provider/serviceProvider";
 @RegisterBehavior()
 export class NetworkBehavior extends ConductBehavior {
 
-  private properties: Array<string>;
-  private static networkService: NetworkService;
-  
+  private networkProperties: Array<string>;
+
   constructor (props: any) {
     super(props);
-    NetworkBehavior.networkService = ServiceProvider.get(NetworkService);
-    this.properties = props.properties || [];
+    this.networkProperties = props.properties || [];
     this.registerToNetwork();
   }
 
   private registerToNetwork () {
-    NetworkBehavior.networkService.register(this);
+    ServiceProvider.get(NetworkService).register(this);
   }
   
   getNetworkedProperties () {
     let parent = this.getParent();
-    return (this.properties || []).reduce((properties, nProp) => {
+    return (this.networkProperties || []).reduce((properties, nProp) => {
       if (parent[nProp]) {
         properties[nProp] = parent[nProp].toString();
       }

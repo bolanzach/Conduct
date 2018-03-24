@@ -11,7 +11,7 @@ export class UtilsService extends ConductService {
   }
   
   generateBehaviorId (behavior: ConductBehavior, parentId: string): string {
-    return parentId + behavior.constructor.name;
+    return `${parentId}-${behavior.constructor.name}`;
   }
   
   generateServiceId (service: Service): string {

@@ -42,8 +42,8 @@ export class ClientNetworkService extends ConductService implements Network {
   @RegisterEvent()
   update (event: UpdateEvent) {
     let propertiesToEmit = {};
-    this.utils.forEach(this.behaviors, (networkBehavior: NetworkBehavior, key) => {
-      propertiesToEmit[key] = networkBehavior.getNetworkedProperties();
+    this.utils.forEach(this.behaviors, (networkBehavior: NetworkBehavior, networkId) => {
+      propertiesToEmit[networkId] = networkBehavior.getNetworkedProperties();
     });
     
     new NetworkUpdateEvent().send();

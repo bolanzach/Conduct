@@ -14,7 +14,7 @@ export class BehaviorManager {
   public initScene (): Scene {
     new Scene(); // have to do something to Scene to have requirejs recognize the module. need a better way to do this
     let record: BehaviorRecord = BehaviorProvider.get('scene');
-    let newAssembler = new BehaviorAssembler(record, '');
+    let newAssembler = new BehaviorAssembler(record, 'Conduct');
     let sceneBehavior = this.constructBehavior(newAssembler, null);
     return sceneBehavior as Scene;
   }
@@ -27,7 +27,7 @@ export class BehaviorManager {
     
     let createProps = function (props?) {
       props = props || {};
-      props.parentId = activeAssembler.parent || activeAssembler.name;
+      props.parentId = activeAssembler.parent;
       return props;
     };
     
