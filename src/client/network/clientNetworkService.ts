@@ -47,7 +47,7 @@ export class ClientNetworkService extends ConductService implements Network {
     });
     
     new NetworkUpdateEvent().send();
-    this.emit('behaviorPropertyUpdates', propertiesToEmit);
+    this.emit('behaviorPropertyUpdate', propertiesToEmit);
   }
 
   private connect () {

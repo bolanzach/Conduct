@@ -28,20 +28,22 @@ export class ServerNetworkService extends ConductService implements Network {
 
   }
 
-  private receive (message: string) {
-    console.log(message);
-    return JSON.parse(message);
-  }
-
   private onConnect (ws) {
-    ws.on('propertyUpdates', msg => {
-      console.log(msg);
-      let networkedProps = this.receive(msg);
+
+    // ws sucks. it won't let me pass a function by reference here
+    ws.on('message', function (msg) {
+      let message;
+
+      try {
+        message = JSON.parse(msg || {});
+      } catch {
+        message = {}
+      }
+
+      if (message.event === 'behaviorPropertyUpdate') {
+        console.log(message);
+      }
     });
   }
-  
-  private onPropertyUpdates (msg: string) {
-    let networkProps = this.receive(msg);
-    console.log(networkProps);
-  }
+
 }
